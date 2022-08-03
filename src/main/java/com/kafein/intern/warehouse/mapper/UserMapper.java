@@ -33,4 +33,7 @@ public interface UserMapper {
      */
     @Named("toUserPublicDTO")
     UserPublicDTO toUserPublicDTO(User user);
+
+    @Named("toUserPublicListDTO")
+    List<UserPublicDTO> toUserPublicListDTO(List<User> userList);
 }

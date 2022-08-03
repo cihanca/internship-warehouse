@@ -49,8 +49,13 @@ public class UserController {
      * @return list of users in the database. If passed id exist, it removes user whose id is matched.
      */
     @DeleteMapping("/remove/{id}")
-    public ResponseEntity<List<User>> removeUser(@PathVariable int id) {
+    public ResponseEntity<List<UserPublicDTO>> removeUser(@PathVariable int id) {
         return new  ResponseEntity<>(userService.editUserList(id),HttpStatus.OK);
+    }
+
+    @PutMapping("/update/{id}/{password}")
+    public ResponseEntity <UserPublicDTO> updateUserPassword ( @PathVariable int id, @PathVariable String password) {
+        return new ResponseEntity<>(userService.updateUserPassword(id, password), HttpStatus.OK);
     }
 
 }

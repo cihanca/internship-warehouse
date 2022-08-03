@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -51,12 +52,7 @@ public class UserService {
      * @return list of users which are converted DTO in the database. each user has all properties but password.
      */
     public List<UserPublicDTO> listUsers() {
-        List<User> userList = userRepository.findAll();
-        List<UserPublicDTO> tempList = new ArrayList<>();
-        for (User u: userList) {
-            tempList.add(userMapper.toUserPublicDTO(u));
-        }
-        return tempList;
+        return userMapper.toUserPublicListDTO(userRepository.findAll());
     }
 
     /**
@@ -65,13 +61,16 @@ public class UserService {
      * @param id, takes user id to check repo
      * @return list of users in the database. If passed id exist, it removes user whose id is matched.
      */
-    public List<User> editUserList(int id) {
-        List<User> userList = userRepository.findAll();
-        for (User u: userList) {
-            if (u.getId() == id)
-                userRepository.delete(u);
-        }
-        return userRepository.findAll();
+    public List<UserPublicDTO> editUserList(int id) {
+        userRepository.deleteById(id);
+        return userMapper.toUserPublicListDTO(userRepository.findAll());
     }
+
+   public UserPublicDTO updateUserPassword(int id, String newPassword) {
+       User user = userRepository.findById(id).orElseThrow(() -> new GenericServiceException("This user is not found with id: " + id));
+       user.setPassword(newPassword);
+       userRepository.save(user);
+       return userMapper.toUserPublicDTO(user);
+   }
 
 }
