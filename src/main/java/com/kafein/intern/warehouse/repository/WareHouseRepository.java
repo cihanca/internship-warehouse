@@ -1,10 +1,18 @@
 package com.kafein.intern.warehouse.repository;
 
-import com.kafein.intern.warehouse.entity.User;
 import com.kafein.intern.warehouse.entity.Warehouse;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-public interface WareHouseRepository extends JpaRepository<Warehouse, Integer> {
+import java.util.List;
 
-    //Warehouse findByGeneralManager(User user);
+@Repository
+public interface WarehouseRepository extends JpaRepository<Warehouse, Integer> {
+    Warehouse save(Warehouse warehouse);
+
+    Warehouse findByWarehouseName(String warehouseName);
+
+    Warehouse findByWarehouseId(int id);
+
+    List<Warehouse> findAllByOrderByWarehouseIdAsc();
 }
