@@ -57,10 +57,11 @@ public class UserService {
         return userMapper.toDTO(user);
     }
 
-    public void deleteUser(int id) {
+    public boolean deleteUser(int id) {
         User user = userMapper.toEntity(getUser(id));
         user.setStatus(false);
         userRepository.save(user);
+        return true;
     }
 
     public List<UserDTO> listUsers() {
