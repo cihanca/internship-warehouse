@@ -2,7 +2,6 @@ package com.kafein.intern.warehouse.mapper;
 
 import com.kafein.intern.warehouse.dto.WarehouseDTO;
 import com.kafein.intern.warehouse.entity.Warehouse;
-import com.kafein.intern.warehouse.request.WarehouseCreateRequest;
 import org.mapstruct.IterableMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Named;
@@ -11,17 +10,12 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface WarehouseMapper {
+    @Named("warehouseToEntity")
+    Warehouse warehouseToEntity(WarehouseDTO warehouseDTO);
 
-    @Named("toWareHouseDTO")
-    WarehouseDTO toWareHouseDTO(Warehouse warehouse);
+    @Named("warehouseToDTO")
+    WarehouseDTO warehouseToDTO(Warehouse warehouse);
 
-    @IterableMapping(qualifiedByName = "toWareHouseDTO")
-    List<WarehouseDTO> toWareHouseDTOList(List<Warehouse> warehouseList);
-
-    @Named("toEntity")
-    Warehouse toEntity(WarehouseDTO warehouseDTO);
-
-    @Named("toEntityFromCreateDTO")
-    Warehouse toEntityFromCreateDTO(WarehouseCreateRequest dto);
-
+    @IterableMapping(qualifiedByName = "warehouseToDTO")
+    List<WarehouseDTO> toDTOList(List<Warehouse> entityList);
 }

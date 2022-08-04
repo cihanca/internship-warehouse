@@ -1,7 +1,7 @@
 package com.kafein.intern.warehouse.mapper;
 
-import com.kafein.intern.warehouse.dto.UserDTO;
 import com.kafein.intern.warehouse.dto.UserNameDTO;
+import com.kafein.intern.warehouse.dto.UserDTO;
 import com.kafein.intern.warehouse.entity.User;
 import org.mapstruct.IterableMapping;
 import org.mapstruct.Mapper;
@@ -26,6 +26,7 @@ public interface UserMapper {
     @Mapping(target = "password", ignore = true)
     UserDTO toDTO(User user);
 
-
+    @IterableMapping(qualifiedByName = "toDTO")
+    List<UserDTO> toDTO(List<User> userList);
 
 }
