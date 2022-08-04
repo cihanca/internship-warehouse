@@ -6,9 +6,11 @@ import com.kafein.intern.warehouse.entity.User;
 import com.kafein.intern.warehouse.exception.GenericServiceException;
 import com.kafein.intern.warehouse.mapper.UserMapper;
 import com.kafein.intern.warehouse.repository.UserRepository;
+import lombok.Data;
 import org.springframework.stereotype.Service;
 
 @Service
+@Data
 public class UserService {
 
     private final UserMapper userMapper;
