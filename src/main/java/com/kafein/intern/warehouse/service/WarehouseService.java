@@ -50,10 +50,6 @@ public class WarehouseService {
 
     public List<WarehouseDTO> listWarehouses() {
         List<Warehouse> warehouseList = warehouseRepository.findAllByOrderByWarehouseIdAsc();
-        List<WarehouseDTO> warehouseDTOList = new ArrayList<>();
-        for(Warehouse w : warehouseList){
-            warehouseDTOList.add(warehouseMapper.warehouseToDTO(w));
-        }
-        return warehouseDTOList;
+        return warehouseMapper.toDTOList(warehouseList);
     }
 }

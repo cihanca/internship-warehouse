@@ -1,6 +1,5 @@
 package com.kafein.intern.warehouse.dto;
 
-import com.kafein.intern.warehouse.entity.User;
 import lombok.Data;
 
 @Data
@@ -16,6 +15,6 @@ public class WarehouseDTO {
 
     private String address;
 
-    private User generalManager;
+    private UserNameDTO generalManager;
 
 }

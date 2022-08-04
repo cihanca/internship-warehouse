@@ -22,8 +22,8 @@ public class Warehouse {
 
     private String address;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "general_manager_id", referencedColumnName = "generalManager")
+    @OneToOne
+    @JoinColumn(name = "general_manager_id", referencedColumnName = "id")
     private User generalManager;
 
 }

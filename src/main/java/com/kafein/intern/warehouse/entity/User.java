@@ -27,7 +27,4 @@ public class User {
 
     private Boolean status;
 
-    @OneToOne(mappedBy = "generalManager")
-    private Warehouse warehouse;
-
 }
