@@ -21,7 +21,7 @@ public class WarehouseController {
     }
 
     @PostMapping("/save")
-    public ResponseEntity<WarehouseCreateRequest> save(@RequestBody WarehouseCreateRequest warehouseCreateRequest) {
-        return new ResponseEntity<>(warehouseCreateRequest, HttpStatus.OK);
+    public ResponseEntity<WarehouseDTO> save(@RequestBody WarehouseCreateRequest warehouseCreateRequest) {
+        return new ResponseEntity<>(wareHouseService.save(warehouseCreateRequest), HttpStatus.OK);
     }
 }

@@ -21,6 +21,4 @@ public interface WarehouseMapper {
     @Named("toEntity")
     Warehouse toEntity(WarehouseDTO warehouseDTO);
 
-    @Named("toWarehouse")
-    Warehouse toWarehouse(WarehouseCreateRequest warehouseCreateRequest);
 }

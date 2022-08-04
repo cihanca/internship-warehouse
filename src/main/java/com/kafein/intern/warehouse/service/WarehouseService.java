@@ -8,6 +8,7 @@ import com.kafein.intern.warehouse.mapper.WarehouseMapper;
 import com.kafein.intern.warehouse.repository.UserRepository;
 import com.kafein.intern.warehouse.repository.WareHouseRepository;
 import com.kafein.intern.warehouse.request.WarehouseCreateRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -15,6 +16,7 @@ public class WarehouseService  {
 
     private final WarehouseMapper warehouseMapper;
     private final WareHouseRepository wareHouseRepository;
+    @Autowired
     private final UserService userService;
 
 
@@ -25,7 +27,18 @@ public class WarehouseService  {
     }
 
     public WarehouseDTO save(WarehouseCreateRequest warehouseCreateRequest) {
-        Warehouse warehouse = warehouseMapper.toWarehouse(warehouseCreateRequest);
+        if ( warehouseCreateRequest== null ) {
+            return null;
+        }
+        User user = userService.getUserMapper().toEntity(userService.getUser(warehouseCreateRequest.getGeneralManagerId()));
+        if (user == null)
+            return null;
+        Warehouse warehouse = new Warehouse();
+        warehouse.setWarehouseId( warehouseCreateRequest.getWarehouseId() );
+        warehouse.setRegion( warehouseCreateRequest.getRegion() );
+        warehouse.setDistrict( warehouseCreateRequest.getDistrict() );
+        warehouse.setAddress( warehouseCreateRequest.getAddress() );
+        warehouse.setGeneralManager(user);
         wareHouseRepository.save(warehouse);
         return warehouseMapper.toWareHouseDTO(warehouse);
     }
