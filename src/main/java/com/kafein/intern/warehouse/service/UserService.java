@@ -40,4 +40,11 @@ public class UserService {
         user = userRepository.save(user);
         return userMapper.toDTO(user);
     }
+
+    public Boolean delete(int id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new GenericServiceException("This user is not found with id: " + id));
+        user.setStatus(false);
+        userRepository.save(user);
+        return true;
+    }
 }

@@ -28,4 +28,9 @@ public class UserController {
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Boolean> delete(@PathVariable int id) {
+        return new ResponseEntity<>(userService.delete(id), HttpStatus.OK);
+    }
+
 }
