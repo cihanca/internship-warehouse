@@ -16,17 +16,27 @@ public class UserController {
         this.userService = userService;
     }
 
+    @PostMapping("/save")
+    public ResponseEntity<UserDTO> save(@RequestBody UserDTO userDTO) {
+        UserDTO dto = userService.save(userDTO);
+        return new ResponseEntity<>(dto, HttpStatus.OK);
+    }
+
     @GetMapping("/get/{id}")
     public ResponseEntity<UserDTO> getUserById(@PathVariable int id) {
         UserDTO dto = userService.getUser(id);
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
-    @PostMapping("/save")
-    public ResponseEntity<UserDTO> save(@RequestBody UserDTO userDTO) {
-        UserDTO dto = userService.save(userDTO);
-        return new ResponseEntity<>(dto, HttpStatus.OK);
+
+    @GetMapping("/getList")
+    public ResponseEntity<List<UserDTO>> getListOfUsers() {
+        return new ResponseEntity<>(userService.listUsers(),HttpStatus.OK);
     }
+
+    @PutMapping("/change/{id}")
+    public ResponseEntity<UserDTO> updateUser(@PathVariable int id, @RequestBody UserDTO userDTO) {
+        UserDTO dto = userService.updateUser(id, userDTO);
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Boolean> delete(@PathVariable int id) {

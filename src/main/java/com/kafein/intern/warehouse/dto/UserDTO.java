@@ -18,4 +18,6 @@ public class UserDTO {
 
     private Role role;
 
+    private Boolean status;
+
 }
