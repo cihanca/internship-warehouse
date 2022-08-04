@@ -1,5 +1,6 @@
 package com.kafein.intern.warehouse.mapper;
 
+import com.kafein.intern.warehouse.dto.WarehouseNameDTO;
 import com.kafein.intern.warehouse.dto.WarehouseDTO;
 import com.kafein.intern.warehouse.entity.Warehouse;
 import org.mapstruct.IterableMapping;
@@ -15,6 +16,9 @@ public interface WarehouseMapper {
 
     @Named("warehouseToDTO")
     WarehouseDTO warehouseToDTO(Warehouse warehouse);
+
+    @Named("toNameDTO")
+    WarehouseNameDTO toNameDTO(Warehouse warehouse);
 
     @IterableMapping(qualifiedByName = "warehouseToDTO")
     List<WarehouseDTO> toDTOList(List<Warehouse> entityList);

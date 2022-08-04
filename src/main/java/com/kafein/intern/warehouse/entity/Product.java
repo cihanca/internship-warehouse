@@ -6,7 +6,6 @@ import javax.persistence.*;
 
 @Data
 @Entity
-@Table(name = "products")
 public class Product {
 
     @Id
@@ -17,5 +16,7 @@ public class Product {
 
     @Column(unique = true)
     private String code;
+
+    private Boolean statue;
 
 }
