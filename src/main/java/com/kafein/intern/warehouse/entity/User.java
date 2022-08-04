@@ -25,4 +25,9 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    private Boolean status;
+
+    @OneToOne(mappedBy = "generalManager")
+    private Warehouse warehouse;
+
 }

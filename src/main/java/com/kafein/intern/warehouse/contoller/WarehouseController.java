@@ -1,7 +1,7 @@
 package com.kafein.intern.warehouse.contoller;
 
-import com.kafein.intern.warehouse.dto.UserDTO;
-import com.kafein.intern.warehouse.service.UserService;
+import com.kafein.intern.warehouse.dto.WarehouseDTO;
+import com.kafein.intern.warehouse.service.WarehouseService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -9,33 +9,33 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/user")
-public class UserController {
+@RequestMapping("/warehouse")
+public class WarehouseController {
 
-    private final UserService userService;
+    private final WarehouseService warehouseService;
 
-    public UserController(UserService userService) {
-        this.userService = userService;
+    public WarehouseController(WarehouseService warehouseService) {
+        this.warehouseService = warehouseService;
     }
 
     @PostMapping("/save")
-    public ResponseEntity<UserDTO> save(@RequestBody UserDTO userDTO) {
-        UserDTO dto = userService.save(userDTO);
+    public ResponseEntity<WarehouseDTO> save(@RequestBody WarehouseDTO warehouseDTO) {
+        WarehouseDTO dto = warehouseService.save(warehouseDTO);
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
     @GetMapping("/get/{id}")
-    public ResponseEntity<UserDTO> getUserById(@PathVariable int id) {
-        UserDTO dto = userService.getUser(id);
+    public ResponseEntity<WarehouseDTO> getWarehouseById(@PathVariable int id) {
+        WarehouseDTO dto = warehouseService.getWarehouse(id);
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
     @GetMapping("/getList")
-    public ResponseEntity<List<UserDTO>> getListOfUsers() {
-        return new ResponseEntity<>(userService.listUsers(),HttpStatus.OK);
+    public ResponseEntity<List<WarehouseDTO>> getListOfWarehouses() {
+        return new ResponseEntity<>(warehouseService.listWarehouses(),HttpStatus.OK);
     }
 
-    @PutMapping("/change/{id}")
+    /*@PutMapping("/change/{id}")
     public ResponseEntity<UserDTO> updateUser(@PathVariable int id, @RequestBody UserDTO userDTO) {
         UserDTO dto = userService.updateUser(id, userDTO);
         return new ResponseEntity<>(dto, HttpStatus.OK);
@@ -45,6 +45,5 @@ public class UserController {
     public ResponseEntity<List<UserDTO>> deleteUser(@PathVariable int id) {
         userService.deleteUser(id);
         return getListOfUsers();
-    }
-
+    }*/
 }
