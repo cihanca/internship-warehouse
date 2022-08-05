@@ -2,6 +2,7 @@ package com.kafein.intern.warehouse.contoller;
 ;
 import com.kafein.intern.warehouse.dto.ProductDetailDTO;
 
+import com.kafein.intern.warehouse.dto.ProductDetailFilterDTO;
 import com.kafein.intern.warehouse.service.ProductDetailService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +26,11 @@ public class ProductDetailController {
     @GetMapping("/{id}")
     public ResponseEntity<ProductDetailDTO> getById(@PathVariable int id) {
         return new ResponseEntity<>(productDetailService.findById(id), HttpStatus.OK);
+    }
+
+    @PostMapping("/filter")
+    public ResponseEntity<?> filter(@RequestBody ProductDetailFilterDTO filterDTO) {
+        return new ResponseEntity<>(productDetailService.filter(filterDTO), HttpStatus.OK);
     }
 
 }
