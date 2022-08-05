@@ -18,6 +18,6 @@ public class Product {
     @Column(unique = true)
     private String code;
 
-    private Boolean statue;
+    private Boolean status;
 
 }

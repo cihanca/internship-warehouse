@@ -5,10 +5,7 @@ import com.kafein.intern.warehouse.dto.ProductDetailDTO;
 import com.kafein.intern.warehouse.service.ProductDetailService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/productDetail")
@@ -20,8 +17,14 @@ public class ProductDetailController {
         this.productDetailService = productDetailService;
     }
 
-    @PostMapping("save")
+    @PostMapping("/save")
     public ResponseEntity<ProductDetailDTO> save(@RequestBody ProductDetailDTO productDetailDTO) {
         return new ResponseEntity<>(productDetailService.save(productDetailDTO), HttpStatus.OK);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ProductDetailDTO> getById(@PathVariable int id) {
+        return new ResponseEntity<>(productDetailService.findById(id), HttpStatus.OK);
+    }
+
 }

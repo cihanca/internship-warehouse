@@ -1,5 +1,4 @@
 package com.kafein.intern.warehouse.dto;
-import com.kafein.intern.warehouse.entity.Product;
 import lombok.Data;
 
 @Data
@@ -9,7 +8,7 @@ public class ProductDetailDTO {
 
     private WarehouseNameDTO warehouse;
 
-    private Product product;
+    private ProductDTO product;
 
     private int productLimit;
 

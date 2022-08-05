@@ -31,6 +31,7 @@ public class ProductService {
 
     }
 
+    //todo unique kontolünden dolayı hata alması durumunda hatanın handle edilmesi
     public ProductDTO save(ProductDTO productDTO) {
         validateBeforeSave(productDTO.getName());
         Product product = productMapper.toEntity(productDTO);
@@ -38,9 +39,7 @@ public class ProductService {
     }
 
     public ProductDTO getProduct(int id) {
-        Product product = productRepository.findById(id).orElse(null);
-        if (product == null)
-            throw new RuntimeException("Product with given id " + id + " doesn't exist");
+        Product product = productRepository.findById(id).orElseThrow(() -> new RuntimeException("Product with given id " + id + " doesn't exist"));
         return productMapper.toDTO(product);
     }
 
