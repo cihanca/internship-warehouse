@@ -1,18 +1,19 @@
 package com.kafein.intern.warehouse.service;
 
-import com.kafein.intern.warehouse.entity.User;
 import com.kafein.intern.warehouse.dto.UserDTO;
-import com.kafein.intern.warehouse.mapper.UserMapper;
+import com.kafein.intern.warehouse.dto.UserNameDTO;
+import com.kafein.intern.warehouse.dto.UserPublicDTO;
+import com.kafein.intern.warehouse.entity.User;
 import com.kafein.intern.warehouse.exception.GenericServiceException;
+import com.kafein.intern.warehouse.mapper.UserMapper;
 import com.kafein.intern.warehouse.repository.UserRepository;
-import lombok.Data;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
-@Data
 public class UserService {
 
     private final UserMapper userMapper;
@@ -25,17 +26,13 @@ public class UserService {
     }
 
     public UserDTO getUser(int id) {
-        User user = userRepository.findByIdAndStatus(id,true);
-
-        if (user == null) {
-            throw new RuntimeException("User with id " + id + " not found!");
-        }
-        //.orElseThrow(() -> new GenericServiceException("User with id: " + id + "not found!"));
-        return userMapper.toDTO(user);
+        User user = userRepository.findById(id).orElseThrow(() -> new GenericServiceException("This user is not found with id: " + id));
+        UserDTO dto = userMapper.toDTO(user);
+        return dto;
     }
 
     private void validateBeforeSave(String email) {
-        User fromFB = userRepository.findByEmailAndStatus(email, true);
+        User fromFB = userRepository.findByEmail(email);
 
         if (fromFB != null) {
             throw new RuntimeException("This email already in use!");
@@ -49,29 +46,31 @@ public class UserService {
         return userMapper.toDTO(user);
     }
 
-    public UserDTO updateUser(int id, UserDTO userDTO) {
-        User user = userMapper.toEntity(getUser(id));
-        user.setEmail(userDTO.getEmail());
-        user.setRole(userDTO.getRole());
-        user.setPassword(userDTO.getPassword());
-        user.setUsername(userDTO.getUsername());
-        user = userRepository.save(user);
-        return userMapper.toDTO(user);
+    /**
+     * mappers for user whose id is kept secret.
+     *
+     * @return list of users which are converted DTO in the database. each user has all properties but password.
+     */
+    public List<UserPublicDTO> listUsers() {
+        return userMapper.toUserPublicListDTO(userRepository.findAll());
     }
 
-    public boolean deleteUser(int id) {
-        User user = userMapper.toEntity(getUser(id));
-        user.setStatus(false);
-        userRepository.save(user);
-        return true;
+    /**
+     * deletes user from repo.
+     *
+     * @param id, takes user id to check repo
+     * @return list of users in the database. If passed id exist, it removes user whose id is matched.
+     */
+    public List<UserPublicDTO> editUserList(int id) {
+        userRepository.deleteById(id);
+        return userMapper.toUserPublicListDTO(userRepository.findAll());
     }
 
-    public List<UserDTO> listUsers() {
-        //List<User> userList = userRepository.findByRoleOrderByIdAsc(ADMIN);
-        //List<User> userList = userRepository.findByRoleOrderByIdDesc(USER);
-        List<User> userList = userRepository.findByStatusOrderByIdAsc(true);
-        List<UserDTO> userDTOList = new ArrayList<>();
-        return userMapper.toDTO(userList);
-    }
+   public UserPublicDTO updateUserPassword(int id, String newPassword) {
+       User user = userRepository.findById(id).orElseThrow(() -> new GenericServiceException("This user is not found with id: " + id));
+       user.setPassword(newPassword);
+       userRepository.save(user);
+       return userMapper.toUserPublicDTO(user);
+   }
 
 }
