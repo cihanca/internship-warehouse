@@ -8,6 +8,7 @@ import com.kafein.intern.warehouse.repository.ProductDetailRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,8 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.criteria.Predicate;
 
-@RestController
-@RequestMapping("/productDetail")
+
+@Service
 public class ProductDetailService {
 
     private final ProductDetailMapper productDetailMapper;
@@ -31,8 +32,32 @@ public class ProductDetailService {
 
     public ProductDetailDTO save(ProductDetailDTO productDetailDTO) {
         ProductDetail productDetail = productDetailMapper.toEntity(productDetailDTO);
-        productDetail.setProductCount(productDetail.getProductCount()+1);
-        return productDetailMapper.toDTO(productDetailRepository.save(productDetail));
+        productDetailRepository.save(productDetail);
+        System.out.println("id: " + productDetail.getProduct().getId());
+        ProductDetail newDetail = productDetailRepository.findByProduct_IdAndWarehouse_Id(productDetail.getProduct().getId(),productDetail.getWarehouse().getId());
+        if (newDetail != null) {
+            System.out.println(newDetail.getProduct().getName());
+            System.out.println(newDetail.getProduct() == null);
+        }
+        String key = newDetail.getProduct().getKey();
+        String name = newDetail.getWarehouse().getWarehouseName();
+        updateProductCount(key, name);
+        System.out.println("warehouse name: " + newDetail.getWarehouse().getWarehouseName());
+        return productDetailMapper.toDTO(productDetail);
+    }
+
+
+    void updateProductCount(String key, String warehouseName) {
+        List<ProductDetail> productDetailList = productDetailRepository.findAll();
+        int productCount = productDetailRepository.countByProduct_KeyAndWarehouse_WarehouseName(key,
+                warehouseName);
+        for (ProductDetail p: productDetailList) {
+            System.out.println("key for each: " + p.getProduct().getKey());
+            System.out.println("key for each: " + p.getProduct().getName());
+            if ((p.getProduct().getKey()).equals(key)) {
+                p.setProductCount(productCount);
+            }
+        }
     }
 
     public ProductDetailDTO findById(int id) {

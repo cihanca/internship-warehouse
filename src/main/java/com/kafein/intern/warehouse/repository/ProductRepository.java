@@ -9,6 +9,6 @@ import java.util.List;
 public interface ProductRepository extends JpaRepository<Product,Integer> {
 
     Product findByName(String productName);
-
+    int countByName(String name);
     List<Product> findAllByOrderByIdAsc();
 }

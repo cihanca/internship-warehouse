@@ -6,9 +6,8 @@ import javax.persistence.*;
 
 @Data
 @Entity
-@Table(name = "product_details")
-public class ProductDetail {
-
+@Table(name = "employees")
+public class UserDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -17,10 +16,7 @@ public class ProductDetail {
     private Warehouse warehouse;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    private Product product;
+    private User user;
 
-    private int productLimit;
-
-    private int productCount;
-
+    private int currentEmployeeNumber;
 }

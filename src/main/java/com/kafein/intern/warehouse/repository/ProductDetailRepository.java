@@ -14,8 +14,13 @@ public interface ProductDetailRepository extends JpaRepository<ProductDetail, In
 
     ProductDetail findByProduct_IdAndWarehouse_Region(int product_id, String warehouse_region);
 
+    int countByProduct_KeyAndWarehouse_WarehouseName(String product_key, String warehouse_warehouseName);
+
+    ProductDetail findByProduct_Key(String product_key);
+
     Page<ProductDetail> findAll(@Nullable Specification productSpecification, Pageable pageable);
 
-    ProductDetail findByProduct_IdAndWarehouse_Id(int product_id, int warehouse_id);
+    ProductDetail findByProduct_Id(int product_id);
 
+    ProductDetail findByProduct_IdAndWarehouse_Id(int product_id, int warehouse_id);
 }
