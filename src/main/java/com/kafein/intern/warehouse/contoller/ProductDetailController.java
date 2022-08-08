@@ -33,4 +33,9 @@ public class ProductDetailController {
         return new ResponseEntity<>(productDetailService.filter(filterDTO), HttpStatus.OK);
     }
 
+    @PutMapping("/{warehouseId}/{productId}/{count}")
+    public ResponseEntity<?> removeProductFromWarehouse(@PathVariable int warehouseId, @PathVariable int productId, @PathVariable int count) {
+        return new ResponseEntity<>(productDetailService.removeProductFromWarehouse(warehouseId, productId, count), HttpStatus.OK);
+    }
+
 }

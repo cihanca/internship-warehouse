@@ -41,7 +41,7 @@ public class WarehouseService {
     }
 
     public WarehouseDTO getWarehouse(int id) {
-        Warehouse warehouse = warehouseRepository.findByWarehouseId(id);
+        Warehouse warehouse = warehouseRepository.findById(id);
 
         if (warehouse == null) {
             throw new RuntimeException("Warehouse with id " + id + " not found!");
@@ -51,7 +51,7 @@ public class WarehouseService {
     }
 
     public List<WarehouseDTO> listWarehouses() {
-        List<Warehouse> warehouseList = warehouseRepository.findAllByOrderByWarehouseIdAsc();
+        List<Warehouse> warehouseList = warehouseRepository.findAllByOrderByIdAsc();
         return warehouseMapper.toDTOList(warehouseList);
     }
 }

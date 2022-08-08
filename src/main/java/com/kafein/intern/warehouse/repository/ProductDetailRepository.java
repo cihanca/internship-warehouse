@@ -16,4 +16,6 @@ public interface ProductDetailRepository extends JpaRepository<ProductDetail, In
 
     Page<ProductDetail> findAll(@Nullable Specification productSpecification, Pageable pageable);
 
+    ProductDetail findByProduct_IdAndWarehouse_Id(int product_id, int warehouse_id);
+
 }
