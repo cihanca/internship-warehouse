@@ -6,7 +6,7 @@ import javax.persistence.*;
 
 @Data
 @Entity
-@Table(name = "products")
+@Table(name = "product")
 public class Product {
 
     @Id
@@ -19,5 +19,7 @@ public class Product {
     private String code;
 
     private Boolean status;
+
+    private String key;
 
 }

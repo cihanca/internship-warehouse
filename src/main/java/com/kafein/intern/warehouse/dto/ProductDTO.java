@@ -9,4 +9,5 @@ public class ProductDTO {
     private String name;
     private String code;
     private Boolean status;
+    private String key;
 }
