@@ -10,9 +10,8 @@ import javax.persistence.*;
 public class Warehouse {
 
     @Id
-    @Column(name = "warehouse_id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int warehouseId;
+    private int id;
 
     private String warehouseName;
 

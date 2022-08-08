@@ -3,9 +3,12 @@ package com.kafein.intern.warehouse.service;
 import com.kafein.intern.warehouse.dto.ProductDTO;
 import com.kafein.intern.warehouse.entity.Product;
 import com.kafein.intern.warehouse.entity.User;
+import com.kafein.intern.warehouse.enums.ErrorType;
+import com.kafein.intern.warehouse.exception.GenericServiceException;
 import com.kafein.intern.warehouse.mapper.ProductMapper;
 import com.kafein.intern.warehouse.repository.ProductRepository;
 import lombok.Data;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -34,8 +37,15 @@ public class ProductService {
     //todo unique kontolünden dolayı hata alması durumunda hatanın handle edilmesi
     public ProductDTO save(ProductDTO productDTO) {
         validateBeforeSave(productDTO.getName());
-        Product product = productMapper.toEntity(productDTO);
-        return productMapper.toDTO(productRepository.save(product));
+        productDTO.setStatus(true);
+        try {
+            Product product = productMapper.toEntity(productDTO);
+            return productMapper.toDTO(productRepository.save(product));
+        } catch (DataIntegrityViolationException e) {
+            throw new GenericServiceException("This product code already in use: " + productDTO.getCode(), ErrorType.PRODUCT_CODE_ALREADY_IN_USE);
+        } catch (Exception e) {
+            throw new GenericServiceException("Product could not save!", ErrorType.PRODUCT_COULD_NOT_SAVE);
+        }
     }
 
     public ProductDTO getProduct(int id) {

@@ -2,6 +2,8 @@ package com.kafein.intern.warehouse.service;
 
 import com.kafein.intern.warehouse.dto.WarehouseDTO;
 import com.kafein.intern.warehouse.entity.Warehouse;
+import com.kafein.intern.warehouse.enums.ErrorType;
+import com.kafein.intern.warehouse.exception.GenericServiceException;
 import com.kafein.intern.warehouse.mapper.UserMapper;
 import com.kafein.intern.warehouse.mapper.WarehouseMapper;
 import com.kafein.intern.warehouse.repository.UserRepository;
@@ -34,12 +36,12 @@ public class WarehouseService {
         Warehouse warehouse = warehouseRepository.findByWarehouseName(warehouseName);
 
         if (warehouse != null) {
-            throw new RuntimeException("This warehouse already exists!");
+            throw new GenericServiceException("This warehouse already exists with this warehouse name: " + warehouseName, ErrorType.WAREHOUSE_NAME_ALREADY_IN_USE);
         }
     }
 
     public WarehouseDTO getWarehouse(int id) {
-        Warehouse warehouse = warehouseRepository.findByWarehouseId(id);
+        Warehouse warehouse = warehouseRepository.findById(id);
 
         if (warehouse == null) {
             throw new RuntimeException("Warehouse with id " + id + " not found!");
@@ -49,7 +51,7 @@ public class WarehouseService {
     }
 
     public List<WarehouseDTO> listWarehouses() {
-        List<Warehouse> warehouseList = warehouseRepository.findAllByOrderByWarehouseIdAsc();
+        List<Warehouse> warehouseList = warehouseRepository.findAllByOrderByIdAsc();
         return warehouseMapper.toDTOList(warehouseList);
     }
 }
