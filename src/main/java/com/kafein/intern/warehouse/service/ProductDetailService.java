@@ -52,10 +52,23 @@ public class ProductDetailService {
                 predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("product").get("id"), filterDTO.getProductId())));
             }
 
+            if (filterDTO.getProductCode() != null) {
+                predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("product").get("code"), filterDTO.getProductCode())));
+            }
+
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         }, PageRequest.of(0, 10));
 
         return productDetailMapper.toProductDTOList(page.getContent());
 
+    }
+
+
+    public boolean removeProductFromWarehouse(int warehouseId, int productId, int count) {
+
+        ProductDetail detail = productDetailRepository.findByProduct_IdAndWarehouse_Id(productId, warehouseId);
+        detail.setProductCount(detail.getProductCount() - count);
+        productDetailRepository.save(detail);
+        return true;
     }
 }
