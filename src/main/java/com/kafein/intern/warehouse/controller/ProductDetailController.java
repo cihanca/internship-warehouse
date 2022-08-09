@@ -1,4 +1,4 @@
-package com.kafein.intern.warehouse.contoller;
+package com.kafein.intern.warehouse.controller;
 import com.kafein.intern.warehouse.dto.ProcessDetailFilterDTO;
 import com.kafein.intern.warehouse.dto.ProductDetailDTO;
 
