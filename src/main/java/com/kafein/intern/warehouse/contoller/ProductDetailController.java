@@ -3,6 +3,7 @@ package com.kafein.intern.warehouse.contoller;
 import com.kafein.intern.warehouse.dto.ProductDetailDTO;
 
 import com.kafein.intern.warehouse.dto.ProductDetailFilterDTO;
+import com.kafein.intern.warehouse.dto.ProductUpdateDTO;
 import com.kafein.intern.warehouse.enums.ProcessType;
 import com.kafein.intern.warehouse.service.ProductDetailService;
 import org.springframework.http.HttpStatus;
@@ -34,11 +35,10 @@ public class ProductDetailController {
         return new ResponseEntity<>(productDetailService.filter(filterDTO), HttpStatus.OK);
     }
 
-    @PutMapping("/{processType}/{warehouseId}/{productId}/{count}/{userId}")
-    public ResponseEntity<?> removeProductFromWarehouse(@PathVariable ProcessType processType, @PathVariable int warehouseId,
-                                                        @PathVariable int productId, @PathVariable int count, @PathVariable int userId) {
+    @PostMapping("/updateProduct")
+    public ResponseEntity<?> removeProductFromWarehouse(@RequestBody ProductUpdateDTO productUpdateDTO) {
         return new ResponseEntity<>(productDetailService.
-                updateProductAtWarehouse(processType,warehouseId, productId, count, userId), HttpStatus.OK);
+                updateProductAtWarehouse(productUpdateDTO), HttpStatus.OK);
     }
 
 }

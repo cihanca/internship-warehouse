@@ -2,6 +2,7 @@ package com.kafein.intern.warehouse.service;
 
 import com.kafein.intern.warehouse.dto.ProductDetailDTO;
 import com.kafein.intern.warehouse.dto.ProductDetailFilterDTO;
+import com.kafein.intern.warehouse.dto.ProductUpdateDTO;
 import com.kafein.intern.warehouse.entity.ProcessDetail;
 import com.kafein.intern.warehouse.entity.ProductDetail;
 import com.kafein.intern.warehouse.entity.User;
@@ -97,29 +98,29 @@ public class ProductDetailService {
 
     }
 
-    public boolean updateProductAtWarehouse(ProcessType processType, int warehouseId, int productId, int count, int userId) {
-        User userOnDuty = userRepository.findById(userId).orElseThrow(() ->
-                new GenericServiceException("This user is not found with id: " + userId, ErrorType.USER_NOT_FOUND));
+    public boolean updateProductAtWarehouse(ProductUpdateDTO productUpdateDTO) {
+        User userOnDuty = userRepository.findById(productUpdateDTO.getUserId()).orElseThrow(() ->
+                new GenericServiceException("This user is not found with id: " + productUpdateDTO.getUserId(), ErrorType.USER_NOT_FOUND));
         if (userOnDuty.getRole() != Role.ADMIN) {
-            throw new GenericServiceException("User with id: " + userId + " does not have permission.",
+            throw new GenericServiceException("User with id: " + productUpdateDTO.getUserId() + " does not have permission.",
                     ErrorType.DO_NOT_HAVE_PERMISSION);
         }
 
-        if (productDetailRepository.findByProduct_IdAndWarehouse_Id(productId, warehouseId) == null) {
-            throw new GenericServiceException("Cannot find product detail record with product with id: " + productId +
-                    " or warehouse with id: " + warehouseId, ErrorType.WAREHOUSE_OR_PRODUCT_DOES_NOT_EXIST);
+        if (productDetailRepository.findByProduct_IdAndWarehouse_Id(productUpdateDTO.getUserId(), productUpdateDTO.getWarehouseId()) == null) {
+            throw new GenericServiceException("Cannot find product detail record with product with id: " + productUpdateDTO.getWarehouseId() +
+                    " or warehouse with id: " + productUpdateDTO.getWarehouseId(), ErrorType.WAREHOUSE_OR_PRODUCT_DOES_NOT_EXIST);
         }
-        ProductDetail detail = productDetailRepository.findByProduct_IdAndWarehouse_Id(productId, warehouseId);
-        if (processType == ProcessType.ADD) {
-            addProductToWarehouse(detail,count);
+        ProductDetail detail = productDetailRepository.findByProduct_IdAndWarehouse_Id(productUpdateDTO.getProductId(), productUpdateDTO.getWarehouseId());
+        if (productUpdateDTO.getProcessType() == ProcessType.ADD) {
+            addProductToWarehouse(detail,productUpdateDTO.getCount());
 
         }
-        else if (processType == ProcessType.REMOVE) {
-            removeProductToWarehouse(detail,count, warehouseId);
+        else if (productUpdateDTO.getProcessType() == ProcessType.REMOVE) {
+            removeProductToWarehouse(detail,productUpdateDTO.getCount(), productUpdateDTO.getWarehouseId());
 
         }
         productDetailRepository.save(detail);
-        setProcessDetail(detail, userId, count, processType);
+        setProcessDetail(detail, productUpdateDTO.getUserId(), productUpdateDTO.getCount(), productUpdateDTO.getProcessType());
         return true;
     }
 
@@ -132,6 +133,10 @@ public class ProductDetailService {
         if (detail.getProductCount() - count < 0) {
             throw new GenericServiceException("There is no enough product in warehouse " + warehouseId +
                     "\nNumber of products in stock: " + detail.getProductCount(), ErrorType.INSUFFICIENT_NUMBER_OF_PRODUCTS);
+        }
+
+        if (detail.getProductCount()- count < detail.getProductLimit()) {
+            throw new GenericServiceException("If you continue to process, products in stock will be below at a critical level.", ErrorType.CRITICAL_LEVEL);
         }
         detail.setProductCount(detail.getProductCount() - count);
         return true;
