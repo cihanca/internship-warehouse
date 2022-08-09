@@ -4,7 +4,6 @@ import com.kafein.intern.warehouse.enums.ProcessType;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;
 
-
 import javax.persistence.*;
 import java.time.ZonedDateTime;
 

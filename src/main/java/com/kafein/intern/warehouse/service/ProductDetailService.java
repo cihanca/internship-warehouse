@@ -1,5 +1,7 @@
 package com.kafein.intern.warehouse.service;
 
+import com.kafein.intern.warehouse.dto.ProcessDetailDTO;
+import com.kafein.intern.warehouse.dto.ProcessDetailFilterDTO;
 import com.kafein.intern.warehouse.dto.ProductDetailDTO;
 import com.kafein.intern.warehouse.dto.ProductDetailFilterDTO;
 import com.kafein.intern.warehouse.entity.ProcessDetail;
@@ -7,6 +9,7 @@ import com.kafein.intern.warehouse.entity.ProductDetail;
 import com.kafein.intern.warehouse.enums.ErrorType;
 import com.kafein.intern.warehouse.enums.ProcessType;
 import com.kafein.intern.warehouse.exception.GenericServiceException;
+import com.kafein.intern.warehouse.mapper.ProcessDetailMapper;
 import com.kafein.intern.warehouse.mapper.ProductDetailMapper;
 import com.kafein.intern.warehouse.repository.ProcessDetailRepository;
 import com.kafein.intern.warehouse.repository.ProductDetailRepository;
@@ -30,11 +33,13 @@ import javax.persistence.criteria.Predicate;
 public class ProductDetailService {
 
     private final ProductDetailMapper productDetailMapper;
+    private final ProcessDetailMapper processDetailMapper;
     private final ProductDetailRepository productDetailRepository;
     private final ProcessDetailRepository processDetailRepository;
 
-    public ProductDetailService(ProductDetailMapper productDetailMapper, ProductDetailRepository productDetailRepository, ProcessDetailRepository processDetailRepository) {
+    public ProductDetailService(ProductDetailMapper productDetailMapper, ProcessDetailMapper processDetailMapper, ProductDetailRepository productDetailRepository, ProcessDetailRepository processDetailRepository) {
         this.productDetailMapper = productDetailMapper;
+        this.processDetailMapper = processDetailMapper;
         this.productDetailRepository = productDetailRepository;
         this.processDetailRepository = processDetailRepository;
     }
@@ -47,7 +52,6 @@ public class ProductDetailService {
 
     public void saveProcess(ProductDetail pDetail, ProcessType pType, int count){
         ZonedDateTime zonedDateTimeNow = ZonedDateTime.now(ZoneId.of("UTC"));
-
         ProcessDetail processDetail = new ProcessDetail();
         processDetail.setProductDetail(pDetail);
         processDetail.setProcessType(pType);
@@ -58,6 +62,7 @@ public class ProductDetailService {
             processDetail.setUser(pDetail.getWarehouse().getGeneralManager());
         else
             processDetail.setUser(null);
+
         processDetailRepository.save(processDetail);
     }
 
@@ -129,4 +134,31 @@ public class ProductDetailService {
         saveProcess(productDetail, ProcessType.ADD_PRODUCT, count);
         return true;
     }
+
+    @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+    public List<ProcessDetailDTO> filterProcesses(ProcessDetailFilterDTO filterDTO) {
+        Page<ProcessDetail> page = processDetailRepository.findAll((root, query, criteriaBuilder) -> {
+            query.distinct(true);
+            query.orderBy(criteriaBuilder.asc(root.get("id")));
+            List<Predicate> predicates = new ArrayList<>();
+
+            if (filterDTO.getProductId() != null) {
+                predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("productDetail").get("product").get("id"), filterDTO.getProductId())));
+            }
+
+            if (filterDTO.getProductCode() != null) {
+                predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("productDetail").get("product").get("code"), filterDTO.getProductCode())));
+            }
+
+            if (filterDTO.getWarehouseId() != null) {
+                predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("productDetail").get("warehouse").get("id"), filterDTO.getWarehouseId())));
+            }
+
+            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+        }, PageRequest.of(0, 10));
+
+        saveProcess(null, ProcessType.FILTER_PROCESSES, 1);
+        return processDetailMapper.toProcessDTOList(page.getContent());
+    }
+
 }

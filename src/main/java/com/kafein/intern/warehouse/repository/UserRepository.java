@@ -17,8 +17,6 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     List<User> findByRoleOrderByIdAsc(Role role);
 
-    List<User> findByRoleOrderByIdDesc(Role ROLE);
-
     User findByIdAndStatus(int id, Boolean status);
 
     List<User> findByStatusOrderByIdAsc(Boolean b);

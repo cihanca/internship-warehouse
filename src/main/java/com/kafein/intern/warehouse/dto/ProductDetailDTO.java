@@ -13,4 +13,5 @@ public class ProductDetailDTO {
     private int productLimit;
 
     private int productCount;
+
 }

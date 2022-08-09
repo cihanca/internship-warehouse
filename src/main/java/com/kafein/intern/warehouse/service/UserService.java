@@ -31,7 +31,7 @@ public class UserService {
         if (user == null) {
             throw new GenericServiceException("User with id " + id + " not found!", ErrorType.USER_NOT_FOUND);
         }
-        //.orElseThrow(() -> new GenericServiceException("User with id: " + id + "not found!"));
+
         return userMapper.toDTO(user);
     }
 
@@ -71,7 +71,6 @@ public class UserService {
         //List<User> userList = userRepository.findByRoleOrderByIdAsc(ADMIN);
         //List<User> userList = userRepository.findByRoleOrderByIdDesc(USER);
         List<User> userList = userRepository.findByStatusOrderByIdAsc(true);
-        List<UserDTO> userDTOList = new ArrayList<>();
         return userMapper.toDTO(userList);
     }
 

@@ -20,6 +20,5 @@ public interface ProductMapper {
     @Named("toEntity")
     Product toEntity(ProductDTO productDTO);
 
-
 }
 

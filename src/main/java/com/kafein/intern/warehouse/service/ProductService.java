@@ -28,16 +28,17 @@ public class ProductService {
     // how to inform user about product be is adding to is previously add but then remove from the list.
     private void validateBeforeSave(String productName) {
         Product fromRepo = productRepository.findByName(productName);
+
         if (fromRepo != null) {
             throw new GenericServiceException("Product name " + productName + " already in use!", ErrorType.PRODUCT_NAME_ALREADY_IN_USE);
         }
-
     }
 
     //todo unique kontolünden dolayı hata alması durumunda hatanın handle edilmesi
     public ProductDTO save(ProductDTO productDTO) {
         validateBeforeSave(productDTO.getName());
         productDTO.setStatus(true);
+
         try {
             Product product = productMapper.toEntity(productDTO);
             return productMapper.toDTO(productRepository.save(product));
@@ -56,4 +57,5 @@ public class ProductService {
     public List<ProductDTO> listAllProducts() {
         return productMapper.toProductDTOList(productRepository.findAllByOrderByIdAsc());
     }
+
 }

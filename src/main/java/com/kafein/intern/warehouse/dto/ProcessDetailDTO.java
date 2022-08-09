@@ -1,7 +1,5 @@
 package com.kafein.intern.warehouse.dto;
 
-import com.kafein.intern.warehouse.entity.ProductDetail;
-import com.kafein.intern.warehouse.entity.User;
 import com.kafein.intern.warehouse.enums.ProcessType;
 import lombok.Data;
 
@@ -14,9 +12,9 @@ public class ProcessDetailDTO {
 
     private ZonedDateTime date;
 
-    private User user;
+    private UserNameDTO user;
 
-    private ProductDetail productDetail;
+    private ProductDetailDTO productDetail;
 
     private int count;
 

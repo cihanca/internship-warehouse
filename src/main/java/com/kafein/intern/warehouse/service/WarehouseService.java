@@ -46,7 +46,7 @@ public class WarehouseService {
         if (warehouse == null) {
             throw new GenericServiceException("Warehouse with id " + id + " not found!", ErrorType.WAREHOUSE_NOT_FOUND);
         }
-        //.orElseThrow(() -> new GenericServiceException("User with id: " + id + "not found!"));
+
         return warehouseMapper.warehouseToDTO(warehouse);
     }
 
@@ -54,4 +54,5 @@ public class WarehouseService {
         List<Warehouse> warehouseList = warehouseRepository.findAllByOrderByIdAsc();
         return warehouseMapper.toDTOList(warehouseList);
     }
+
 }

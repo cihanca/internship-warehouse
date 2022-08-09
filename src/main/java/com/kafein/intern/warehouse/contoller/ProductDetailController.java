@@ -1,4 +1,5 @@
 package com.kafein.intern.warehouse.contoller;
+import com.kafein.intern.warehouse.dto.ProcessDetailFilterDTO;
 import com.kafein.intern.warehouse.dto.ProductDetailDTO;
 
 import com.kafein.intern.warehouse.dto.ProductDetailFilterDTO;
@@ -32,9 +33,14 @@ public class ProductDetailController {
         return new ResponseEntity<>(productDetailService.findById(id), HttpStatus.OK);
     }
 
-    @PostMapping("/filter")
+    @PostMapping("/filterProducts")
     public ResponseEntity<?> filter(@RequestBody ProductDetailFilterDTO filterDTO) {
         return new ResponseEntity<>(productDetailService.filter(filterDTO), HttpStatus.OK);
+    }
+
+    @PostMapping("/filterProcesses")
+    public ResponseEntity<?> filterProcesses(@RequestBody ProcessDetailFilterDTO filterDTO) {
+        return new ResponseEntity<>(productDetailService.filterProcesses(filterDTO), HttpStatus.OK);
     }
 
     @PutMapping("/remove/{warehouseId}/{productId}/{count}")
