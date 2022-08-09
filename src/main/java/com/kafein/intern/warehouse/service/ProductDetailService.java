@@ -68,6 +68,7 @@ public class ProductDetailService {
 
     @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
     public List<ProcessDetailDTO> filterProcess(ProcessFilterDTO processFilterDTO) {
+        log.info("Process filtering is running.");
         Page<ProcessDetail> page = processDetailRepository.findAll((root, query, criteriaBuilder) -> {
             query.distinct(true);
             query.orderBy(criteriaBuilder.asc(root.get("id")));
@@ -103,7 +104,7 @@ public class ProductDetailService {
 
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         }, PageRequest.of(0, 10));
-
+        log.info("Process filtering is successfully completed.");
         return processDetailMapper.toProcessDTOList(page.getContent());
     }
 
@@ -150,6 +151,7 @@ public class ProductDetailService {
     public boolean updateProductAtWarehouse(ProductUpdateDTO productUpdateDTO) {
         User userOnDuty = userRepository.findById(productUpdateDTO.getUserId()).orElseThrow(() ->
                 new GenericServiceException("This user is not found with id: " + productUpdateDTO.getUserId(), ErrorType.USER_NOT_FOUND));
+
         if (userOnDuty.getRole() != Role.ADMIN) {
             throw new GenericServiceException("User with id: " + productUpdateDTO.getUserId() + " does not have permission.",
                     ErrorType.DO_NOT_HAVE_PERMISSION);
@@ -161,18 +163,22 @@ public class ProductDetailService {
             throw new GenericServiceException("Cannot find product detail record with product with id: " + productUpdateDTO.getWarehouseId() +
                     " or warehouse with id: " + productUpdateDTO.getWarehouseId(), ErrorType.WAREHOUSE_OR_PRODUCT_DOES_NOT_EXIST);
         }
-
-        if (productUpdateDTO.getProcessType() == ProcessType.ADD) {
-            addProductToWarehouse(detail,productUpdateDTO.getCount());
-
-        }
-        else if (productUpdateDTO.getProcessType() == ProcessType.REMOVE) {
-            removeProductToWarehouse(detail,productUpdateDTO.getCount(), productUpdateDTO.getWarehouseId());
-
-        }
+        findProcessTypeAndExecute(productUpdateDTO.getProcessType(),detail,productUpdateDTO.getCount(), productUpdateDTO.getWarehouseId());
         productDetailRepository.save(detail);
         setProcessDetail(detail, productUpdateDTO.getUserId(), productUpdateDTO.getCount(), productUpdateDTO.getProcessType());
         return true;
+    }
+
+    public void findProcessTypeAndExecute(ProcessType processType, ProductDetail detail, int count, int warehouseId) {
+        if (processType == ProcessType.ADD) {
+            addProductToWarehouse(detail,count);
+        }
+        else if (processType == ProcessType.REMOVE) {
+            removeProductToWarehouse(detail, count, warehouseId);
+        }
+        else {
+            throw new GenericServiceException("Invalid process type!", ErrorType.INVALID_REQUEST);
+        }
     }
 
     public boolean addProductToWarehouse(ProductDetail detail, int count) {
@@ -206,6 +212,7 @@ public class ProductDetailService {
         Date out = Date.from(ldt.atZone(ZoneId.systemDefault()).toInstant());
         processDetail.setDate(out);
         processDetailRepository.save(processDetail);
+        log.info("Process Detail successfully saved.");
         return true;
     }
 

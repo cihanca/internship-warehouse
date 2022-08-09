@@ -38,7 +38,7 @@ public class ProductDetailController {
     }
 
     @PostMapping("/updateProduct")
-    public ResponseEntity<?> removeProductFromWarehouse(@RequestBody ProductUpdateDTO productUpdateDTO) {
+    public ResponseEntity<?> updateProductAtWarehouse(@RequestBody ProductUpdateDTO productUpdateDTO) {
         return new ResponseEntity<>(productDetailService.
                 updateProductAtWarehouse(productUpdateDTO), HttpStatus.OK);
     }

@@ -1,6 +1,7 @@
 package com.kafein.intern.warehouse.service;
 
 import com.kafein.intern.warehouse.dto.UserDTO;
+import com.kafein.intern.warehouse.dto.UserDetailDTO;
 import com.kafein.intern.warehouse.dto.UserNameDTO;
 import com.kafein.intern.warehouse.dto.UserPublicDTO;
 import com.kafein.intern.warehouse.entity.User;
@@ -73,5 +74,6 @@ public class UserService {
        userRepository.save(user);
        return userMapper.toUserPublicDTO(user);
    }
+
 
 }

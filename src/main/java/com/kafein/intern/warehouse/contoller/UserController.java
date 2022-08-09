@@ -1,9 +1,11 @@
 package com.kafein.intern.warehouse.contoller;
 
 import com.kafein.intern.warehouse.dto.UserDTO;
+import com.kafein.intern.warehouse.dto.UserDetailDTO;
 import com.kafein.intern.warehouse.dto.UserPublicDTO;
 import com.kafein.intern.warehouse.entity.User;
 import com.kafein.intern.warehouse.service.UserService;
+import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -57,5 +59,4 @@ public class UserController {
     public ResponseEntity <UserPublicDTO> updateUserPassword ( @PathVariable int id, @PathVariable String password) {
         return new ResponseEntity<>(userService.updateUserPassword(id, password), HttpStatus.OK);
     }
-
 }

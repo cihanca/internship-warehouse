@@ -3,6 +3,7 @@ package com.kafein.intern.warehouse.entity;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Data
 @Entity
@@ -24,5 +25,6 @@ public class Warehouse {
     @OneToOne
     @JoinColumn(name = "general_manager_id", referencedColumnName = "id")
     private User generalManager;
+
 
 }
