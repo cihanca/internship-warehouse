@@ -14,6 +14,7 @@ import com.kafein.intern.warehouse.mapper.ProductDetailMapper;
 import com.kafein.intern.warehouse.repository.ProcessDetailRepository;
 import com.kafein.intern.warehouse.repository.ProductDetailRepository;
 import com.kafein.intern.warehouse.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -28,9 +29,11 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import javax.annotation.PostConstruct;
 import javax.persistence.criteria.Predicate;
 
 @Service
+@Slf4j
 public class ProductDetailService {
 
     private final ProductDetailMapper productDetailMapper;
@@ -106,11 +109,13 @@ public class ProductDetailService {
                     ErrorType.DO_NOT_HAVE_PERMISSION);
         }
 
-        if (productDetailRepository.findByProduct_IdAndWarehouse_Id(productUpdateDTO.getUserId(), productUpdateDTO.getWarehouseId()) == null) {
+        ProductDetail detail = productDetailRepository.findByProduct_IdAndWarehouse_Id(productUpdateDTO.getProductId(), productUpdateDTO.getWarehouseId());
+
+        if (detail == null) {
             throw new GenericServiceException("Cannot find product detail record with product with id: " + productUpdateDTO.getWarehouseId() +
                     " or warehouse with id: " + productUpdateDTO.getWarehouseId(), ErrorType.WAREHOUSE_OR_PRODUCT_DOES_NOT_EXIST);
         }
-        ProductDetail detail = productDetailRepository.findByProduct_IdAndWarehouse_Id(productUpdateDTO.getProductId(), productUpdateDTO.getWarehouseId());
+
         if (productUpdateDTO.getProcessType() == ProcessType.ADD) {
             addProductToWarehouse(detail,productUpdateDTO.getCount());
 
@@ -136,7 +141,7 @@ public class ProductDetailService {
         }
 
         if (detail.getProductCount()- count < detail.getProductLimit()) {
-            throw new GenericServiceException("If you continue to process, products in stock will be below at a critical level.", ErrorType.CRITICAL_LEVEL);
+            log.warn("If you continue to process, products in stock will be below at a critical level.");
         }
         detail.setProductCount(detail.getProductCount() - count);
         return true;
@@ -144,6 +149,7 @@ public class ProductDetailService {
 
 
     public boolean setProcessDetail(ProductDetail productDetail, int userId, int count, ProcessType processType) {
+        log.info("Process Detail saving...");
         ProcessDetail processDetail = new ProcessDetail();
         processDetail.setProductDetail(productDetail);
         processDetail.setUser(userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found with id: " + userId)));
@@ -156,4 +162,13 @@ public class ProductDetailService {
         processDetailRepository.save(processDetail);
         return true;
     }
+
+    @PostConstruct
+    public void deneme() {
+        ProcessDetail detail = processDetailRepository.findByProductDetail_Id(1);
+        System.out.println(detail);
+    }
+
+
+
 }
