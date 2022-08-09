@@ -14,6 +14,6 @@ public enum ProcessType {
 
     DELETE_WAREHOUSE,
 
-    FILTER
+    FILTER_PRODUCTS
 
 }

@@ -22,6 +22,11 @@ public class ProductDetailController {
         return new ResponseEntity<>(productDetailService.save(productDetailDTO), HttpStatus.OK);
     }
 
+    @PostMapping("/add/{warehouseId}/{productId}/{count}")
+    public ResponseEntity<Boolean> add(@PathVariable int warehouseId, @PathVariable int productId, @PathVariable int count){
+        return new ResponseEntity<>(productDetailService.add(warehouseId, productId,count), HttpStatus.OK);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<ProductDetailDTO> getById(@PathVariable int id) {
         return new ResponseEntity<>(productDetailService.findById(id), HttpStatus.OK);

@@ -10,6 +10,7 @@ import com.kafein.intern.warehouse.exception.GenericServiceException;
 import com.kafein.intern.warehouse.mapper.ProductDetailMapper;
 import com.kafein.intern.warehouse.repository.ProcessDetailRepository;
 import com.kafein.intern.warehouse.repository.ProductDetailRepository;
+import com.kafein.intern.warehouse.repository.UserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -39,20 +40,25 @@ public class ProductDetailService {
     }
 
     public ProductDetailDTO save(ProductDetailDTO productDetailDTO) {
-        ZonedDateTime zonedDateTimeNow = ZonedDateTime.now(ZoneId.of("UTC"));
-
         ProductDetail productDetail = productDetailMapper.toEntity(productDetailDTO);
         productDetail.setProductCount(productDetail.getProductCount()+1);
+        return productDetailMapper.toDTO(productDetailRepository.save(productDetail));
+    }
+
+    public void saveProcess(ProductDetail pDetail, ProcessType pType, int count){
+        ZonedDateTime zonedDateTimeNow = ZonedDateTime.now(ZoneId.of("UTC"));
 
         ProcessDetail processDetail = new ProcessDetail();
-        processDetail.setProductDetail(productDetail);
-        processDetail.setProcessType(ProcessType.ADD_PRODUCT);
+        processDetail.setProductDetail(pDetail);
+        processDetail.setProcessType(pType);
         processDetail.setDate(zonedDateTimeNow);
-        processDetail.setCount(1);
-        processDetail.setUser(productDetail.getWarehouse().getGeneralManager());
-        processDetailRepository.save(processDetail);
+        processDetail.setCount(count);
 
-        return productDetailMapper.toDTO(productDetailRepository.save(productDetail));
+        if(pDetail != null)
+            processDetail.setUser(pDetail.getWarehouse().getGeneralManager());
+        else
+            processDetail.setUser(null);
+        processDetailRepository.save(processDetail);
     }
 
     public ProductDetailDTO findById(int id) {
@@ -62,7 +68,6 @@ public class ProductDetailService {
 
     @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
     public List<ProductDetailDTO> filter(ProductDetailFilterDTO filterDTO) {
-
         Page<ProductDetail> page = productDetailRepository.findAll((root, query, criteriaBuilder) -> {
             query.distinct(true);
             query.orderBy(criteriaBuilder.asc(root.get("id")));
@@ -71,6 +76,7 @@ public class ProductDetailService {
             if (filterDTO.getProductId() != null) {
                 predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("product").get("id"), filterDTO.getProductId())));
             }
+
             if (filterDTO.getProductCode() != null) {
                 predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("product").get("code"), filterDTO.getProductCode())));
             }
@@ -94,12 +100,11 @@ public class ProductDetailService {
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         }, PageRequest.of(0, 10));
 
+        saveProcess(null, ProcessType.FILTER_PRODUCTS, 1);
         return productDetailMapper.toProductDTOList(page.getContent());
-
     }
 
     public boolean removeProductFromWarehouse(int warehouseId, int productId, int count) {
-        ZonedDateTime zonedDateTimeNow = ZonedDateTime.now(ZoneId.of("UTC"));
         ProductDetail detail = productDetailRepository.findByProduct_IdAndWarehouse_Id(productId, warehouseId);
 
         if(detail.getProductCount() - count < 0)
@@ -109,18 +114,19 @@ public class ProductDetailService {
             productDetailRepository.save(detail);
         }
 
-        ProcessDetail processDetail = new ProcessDetail();
-        processDetail.setProductDetail(detail);
-        processDetail.setProcessType(ProcessType.DELETE_PRODUCT);
-        processDetail.setDate(zonedDateTimeNow);
-        processDetail.setCount(count);
-        processDetail.setUser(detail.getWarehouse().getGeneralManager());
-        processDetailRepository.save(processDetail);
+        saveProcess(detail, ProcessType.DELETE_PRODUCT, count);
 
         if(detail.getProductCount() < detail.getProductLimit())
             System.out.println("Count of products with id " + productId + " is critically low!");
 
         return true;
+    }
 
+    public boolean add(int warehouseId, int productId, int count) {
+        ProductDetail productDetail = productDetailRepository.findByProduct_IdAndWarehouse_Id(productId, warehouseId);
+        productDetail.setProductCount(productDetail.getProductCount() + count);
+        productDetailRepository.save(productDetail);
+        saveProcess(productDetail, ProcessType.ADD_PRODUCT, count);
+        return true;
     }
 }
