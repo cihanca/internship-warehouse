@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class ProductDetailFilterDTO {
 
-    private Integer id;
+    private Integer warehouseId;
 
     private String warehouseRegion;
 

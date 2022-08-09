@@ -1,5 +1,4 @@
 package com.kafein.intern.warehouse.contoller;
-;
 import com.kafein.intern.warehouse.dto.ProductDetailDTO;
 
 import com.kafein.intern.warehouse.dto.ProductDetailFilterDTO;
