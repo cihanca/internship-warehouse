@@ -86,19 +86,19 @@ public class ProductDetailService {
             }
 
             if (processFilterDTO.getUserName() != null) {
-                predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("user").get("name"), processFilterDTO.getUserName() )));
+                predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("productDetail").get("user").get("name"), processFilterDTO.getUserName() )));
             }
 
             if (processFilterDTO.getUserId() != null) {
-                predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("user").get("id"), processFilterDTO.getUserId())));
+                predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("productDetail").get("user").get("id"), processFilterDTO.getUserId())));
             }
 
             if (processFilterDTO.getWarehouseName() != null) {
-                predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("warehouse").get("warehouseName"), processFilterDTO.getWarehouseName())));
+                predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("productDetail").get("warehouse").get("warehouseName"), processFilterDTO.getWarehouseName())));
             }
 
             if (processFilterDTO.getWarehouseId() != null) {
-                predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("warehouse").get("id"), processFilterDTO.getWarehouseId())));
+                predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("productDetail").get("warehouse").get("id"), processFilterDTO.getWarehouseId())));
             }
 
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
@@ -106,7 +106,7 @@ public class ProductDetailService {
 
         return processDetailMapper.toProcessDTOList(page.getContent());
     }
-    
+
 
     @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
     public List<ProductDetailDTO> filter(ProductDetailFilterDTO filterDTO) {
