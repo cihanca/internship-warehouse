@@ -71,8 +71,34 @@ public class ProductDetailService {
         return productDetailMapper.toDTO(productDetail);
     }
 
+    public boolean addProductToWarehouse(int warehouseId, int productId, int count) {
+        ProductDetail productDetail = productDetailRepository.findByProduct_IdAndWarehouse_Id(productId, warehouseId);
+        productDetail.setProductCount(productDetail.getProductCount() + count);
+        productDetailRepository.save(productDetail);
+        saveProcess(productDetail, ProcessType.ADD_PRODUCT, count);
+        return true;
+    }
+
+    public boolean removeProductFromWarehouse(int warehouseId, int productId, int count) {
+        ProductDetail detail = productDetailRepository.findByProduct_IdAndWarehouse_Id(productId, warehouseId);
+
+        if(detail.getProductCount() - count < 0)
+            throw new GenericServiceException("There are not enough products with id " + productId + "!", ErrorType.NOT_ENOUGH_PRODUCTS);
+        else {
+            detail.setProductCount(detail.getProductCount() - count);
+            productDetailRepository.save(detail);
+        }
+
+        saveProcess(detail, ProcessType.DELETE_PRODUCT, count);
+
+        if(detail.getProductCount() < detail.getProductLimit())
+            System.out.println("Count of products with id " + productId + " is critically low!");
+
+        return true;
+    }
+
     @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-    public List<ProductDetailDTO> filter(ProductDetailFilterDTO filterDTO) {
+    public List<ProductDetailDTO> filterProducts(ProductDetailFilterDTO filterDTO) {
         Page<ProductDetail> page = productDetailRepository.findAll((root, query, criteriaBuilder) -> {
             query.distinct(true);
             query.orderBy(criteriaBuilder.asc(root.get("id")));
@@ -109,32 +135,6 @@ public class ProductDetailService {
         return productDetailMapper.toProductDTOList(page.getContent());
     }
 
-    public boolean removeProductFromWarehouse(int warehouseId, int productId, int count) {
-        ProductDetail detail = productDetailRepository.findByProduct_IdAndWarehouse_Id(productId, warehouseId);
-
-        if(detail.getProductCount() - count < 0)
-            throw new GenericServiceException("There are not enough products with id " + productId + "!", ErrorType.NOT_ENOUGH_PRODUCTS);
-        else {
-            detail.setProductCount(detail.getProductCount() - count);
-            productDetailRepository.save(detail);
-        }
-
-        saveProcess(detail, ProcessType.DELETE_PRODUCT, count);
-
-        if(detail.getProductCount() < detail.getProductLimit())
-            System.out.println("Count of products with id " + productId + " is critically low!");
-
-        return true;
-    }
-
-    public boolean addProductToWarehouse(int warehouseId, int productId, int count) {
-        ProductDetail productDetail = productDetailRepository.findByProduct_IdAndWarehouse_Id(productId, warehouseId);
-        productDetail.setProductCount(productDetail.getProductCount() + count);
-        productDetailRepository.save(productDetail);
-        saveProcess(productDetail, ProcessType.ADD_PRODUCT, count);
-        return true;
-    }
-
     @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
     public List<ProcessDetailDTO> filterProcesses(ProcessDetailFilterDTO filterDTO) {
         Page<ProcessDetail> page = processDetailRepository.findAll((root, query, criteriaBuilder) -> {
@@ -152,6 +152,14 @@ public class ProductDetailService {
 
             if (filterDTO.getWarehouseId() != null) {
                 predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("productDetail").get("warehouse").get("id"), filterDTO.getWarehouseId())));
+            }
+
+            if (filterDTO.getProcessType() != null) {
+                predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("processType"), filterDTO.getProcessType())));
+            }
+
+            if (filterDTO.getUserName() != null) {
+                predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("user").get("name"), filterDTO.getUserName())));
             }
 
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));

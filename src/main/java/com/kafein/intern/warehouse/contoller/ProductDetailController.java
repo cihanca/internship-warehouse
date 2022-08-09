@@ -34,8 +34,8 @@ public class ProductDetailController {
     }
 
     @PostMapping("/filterProducts")
-    public ResponseEntity<?> filter(@RequestBody ProductDetailFilterDTO filterDTO) {
-        return new ResponseEntity<>(productDetailService.filter(filterDTO), HttpStatus.OK);
+    public ResponseEntity<?> filterProducts(@RequestBody ProductDetailFilterDTO filterDTO) {
+        return new ResponseEntity<>(productDetailService.filterProducts(filterDTO), HttpStatus.OK);
     }
 
     @PostMapping("/filterProcesses")
