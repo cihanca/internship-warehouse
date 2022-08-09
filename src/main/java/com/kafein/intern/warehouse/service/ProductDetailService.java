@@ -62,7 +62,7 @@ public class ProductDetailService {
     }
 
     public ProductDetailDTO findById(int id) {
-        ProductDetail productDetail = productDetailRepository.findById(id).orElseThrow(() -> new RuntimeException("Product detail not found with id: " + id));
+        ProductDetail productDetail = productDetailRepository.findById(id).orElseThrow(() -> new GenericServiceException("Product with id " + id + " not found!", ErrorType.PRODUCT_NOT_FOUND));
         return productDetailMapper.toDTO(productDetail);
     }
 
@@ -122,7 +122,7 @@ public class ProductDetailService {
         return true;
     }
 
-    public boolean add(int warehouseId, int productId, int count) {
+    public boolean addProductToWarehouse(int warehouseId, int productId, int count) {
         ProductDetail productDetail = productDetailRepository.findByProduct_IdAndWarehouse_Id(productId, warehouseId);
         productDetail.setProductCount(productDetail.getProductCount() + count);
         productDetailRepository.save(productDetail);

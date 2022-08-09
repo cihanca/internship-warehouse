@@ -2,6 +2,7 @@ package com.kafein.intern.warehouse.service;
 
 import com.kafein.intern.warehouse.entity.User;
 import com.kafein.intern.warehouse.dto.UserDTO;
+import com.kafein.intern.warehouse.enums.ErrorType;
 import com.kafein.intern.warehouse.mapper.UserMapper;
 import com.kafein.intern.warehouse.exception.GenericServiceException;
 import com.kafein.intern.warehouse.repository.UserRepository;
@@ -28,7 +29,7 @@ public class UserService {
         User user = userRepository.findByIdAndStatus(id,true);
 
         if (user == null) {
-            throw new RuntimeException("User with id " + id + " not found!");
+            throw new GenericServiceException("User with id " + id + " not found!", ErrorType.USER_NOT_FOUND);
         }
         //.orElseThrow(() -> new GenericServiceException("User with id: " + id + "not found!"));
         return userMapper.toDTO(user);
@@ -38,7 +39,7 @@ public class UserService {
         User fromFB = userRepository.findByEmailAndStatus(email, true);
 
         if (fromFB != null) {
-            throw new RuntimeException("This email already in use!");
+            throw new GenericServiceException("This email already in use!", ErrorType.EMAIL_ALREADY_IN_USE);
         }
     }
 

@@ -2,10 +2,14 @@ package com.kafein.intern.warehouse.enums;
 
 public enum ErrorType {
 
+    PRODUCT_NOT_FOUND,
+    WAREHOUSE_NOT_FOUND,
+    USER_NOT_FOUND,
+    PRODUCT_NAME_ALREADY_IN_USE,
+    EMAIL_ALREADY_IN_USE,
     WAREHOUSE_NAME_ALREADY_IN_USE,
     PRODUCT_CODE_ALREADY_IN_USE,
     PRODUCT_COULD_NOT_SAVE,
-
     NOT_ENOUGH_PRODUCTS
 
 }

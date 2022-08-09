@@ -29,7 +29,7 @@ public class ProductService {
     private void validateBeforeSave(String productName) {
         Product fromRepo = productRepository.findByName(productName);
         if (fromRepo != null) {
-            throw new RuntimeException("Product name " + productName + " is already in use!");
+            throw new GenericServiceException("Product name " + productName + " already in use!", ErrorType.PRODUCT_NAME_ALREADY_IN_USE);
         }
 
     }
@@ -42,7 +42,7 @@ public class ProductService {
             Product product = productMapper.toEntity(productDTO);
             return productMapper.toDTO(productRepository.save(product));
         } catch (DataIntegrityViolationException e) {
-            throw new GenericServiceException("This product code already in use: " + productDTO.getCode(), ErrorType.PRODUCT_CODE_ALREADY_IN_USE);
+            throw new GenericServiceException("Product code " + productDTO.getCode() + " already in use ", ErrorType.PRODUCT_CODE_ALREADY_IN_USE);
         } catch (Exception e) {
             throw new GenericServiceException("Product could not save!", ErrorType.PRODUCT_COULD_NOT_SAVE);
         }

@@ -25,5 +25,4 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     User findByEmailAndStatus(String email, Boolean b);
 
-    static User findByName(String name);
 }

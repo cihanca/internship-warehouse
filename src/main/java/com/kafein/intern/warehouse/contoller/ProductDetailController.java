@@ -23,8 +23,8 @@ public class ProductDetailController {
     }
 
     @PostMapping("/add/{warehouseId}/{productId}/{count}")
-    public ResponseEntity<Boolean> add(@PathVariable int warehouseId, @PathVariable int productId, @PathVariable int count){
-        return new ResponseEntity<>(productDetailService.add(warehouseId, productId,count), HttpStatus.OK);
+    public ResponseEntity<Boolean> addProductToWarehouse(@PathVariable int warehouseId, @PathVariable int productId, @PathVariable int count){
+        return new ResponseEntity<>(productDetailService.addProductToWarehouse(warehouseId, productId,count), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
@@ -37,7 +37,7 @@ public class ProductDetailController {
         return new ResponseEntity<>(productDetailService.filter(filterDTO), HttpStatus.OK);
     }
 
-    @PutMapping("/{warehouseId}/{productId}/{count}")
+    @PutMapping("/remove/{warehouseId}/{productId}/{count}")
     public ResponseEntity<?> removeProductFromWarehouse(@PathVariable int warehouseId, @PathVariable int productId, @PathVariable int count) {
         return new ResponseEntity<>(productDetailService.removeProductFromWarehouse(warehouseId, productId, count), HttpStatus.OK);
     }

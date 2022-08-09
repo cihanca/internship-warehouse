@@ -36,7 +36,7 @@ public class WarehouseService {
         Warehouse warehouse = warehouseRepository.findByWarehouseName(warehouseName);
 
         if (warehouse != null) {
-            throw new GenericServiceException("This warehouse already exists with this warehouse name: " + warehouseName, ErrorType.WAREHOUSE_NAME_ALREADY_IN_USE);
+            throw new GenericServiceException("Warehouse with name " + warehouseName + " already exists!" , ErrorType.WAREHOUSE_NAME_ALREADY_IN_USE);
         }
     }
 
@@ -44,7 +44,7 @@ public class WarehouseService {
         Warehouse warehouse = warehouseRepository.findById(id);
 
         if (warehouse == null) {
-            throw new RuntimeException("Warehouse with id " + id + " not found!");
+            throw new GenericServiceException("Warehouse with id " + id + " not found!", ErrorType.WAREHOUSE_NOT_FOUND);
         }
         //.orElseThrow(() -> new GenericServiceException("User with id: " + id + "not found!"));
         return warehouseMapper.warehouseToDTO(warehouse);
