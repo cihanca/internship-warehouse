@@ -5,6 +5,8 @@ import com.kafein.intern.warehouse.entity.ProcessDetail;
 import org.mapstruct.Mapper;
 import org.mapstruct.Named;
 
+import java.util.List;
+
 @Mapper(componentModel = "spring")
 public interface ProcessDetailMapper {
 
@@ -13,4 +15,6 @@ public interface ProcessDetailMapper {
 
     @Named("toEntity")
     ProcessDetail toEntity(ProcessDetailDTO processDetailDTO);
+
+    List<ProcessDetailDTO> toProcessDTOList(List<ProcessDetail> processDetailList);
 }

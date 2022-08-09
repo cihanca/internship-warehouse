@@ -1,8 +1,6 @@
 package com.kafein.intern.warehouse.service;
 
-import com.kafein.intern.warehouse.dto.ProductDetailDTO;
-import com.kafein.intern.warehouse.dto.ProductDetailFilterDTO;
-import com.kafein.intern.warehouse.dto.ProductUpdateDTO;
+import com.kafein.intern.warehouse.dto.*;
 import com.kafein.intern.warehouse.entity.ProcessDetail;
 import com.kafein.intern.warehouse.entity.ProductDetail;
 import com.kafein.intern.warehouse.entity.User;
@@ -10,6 +8,7 @@ import com.kafein.intern.warehouse.enums.ErrorType;
 import com.kafein.intern.warehouse.enums.ProcessType;
 import com.kafein.intern.warehouse.enums.Role;
 import com.kafein.intern.warehouse.exception.GenericServiceException;
+import com.kafein.intern.warehouse.mapper.ProcessDetailMapper;
 import com.kafein.intern.warehouse.mapper.ProductDetailMapper;
 import com.kafein.intern.warehouse.repository.ProcessDetailRepository;
 import com.kafein.intern.warehouse.repository.ProductDetailRepository;
@@ -39,16 +38,21 @@ public class ProductDetailService {
     private final ProductDetailMapper productDetailMapper;
     private final ProductDetailRepository productDetailRepository;
 
+    private final ProcessDetailMapper processDetailMapper;
     private final ProcessDetailRepository processDetailRepository;
     private final UserRepository userRepository;
 
 
+
+
     public ProductDetailService(ProductDetailMapper productDetailMapper, ProductDetailRepository productDetailRepository,
-                                ProcessDetailRepository processDetailRepository, UserRepository userRepository) {
+                                ProcessDetailRepository processDetailRepository, UserRepository userRepository,
+                                ProcessDetailMapper processDetailMapper) {
         this.productDetailMapper = productDetailMapper;
         this.productDetailRepository = productDetailRepository;
         this.processDetailRepository = processDetailRepository;
         this.userRepository = userRepository;
+        this.processDetailMapper = processDetailMapper;
     }
 
     public ProductDetailDTO save(ProductDetailDTO productDetailDTO) {
@@ -61,6 +65,48 @@ public class ProductDetailService {
         ProductDetail productDetail = productDetailRepository.findById(id).orElseThrow(() -> new RuntimeException("Product detail not found with id: " + id));
         return productDetailMapper.toDTO(productDetail);
     }
+
+    @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+    public List<ProcessDetailDTO> filterProcess(ProcessFilterDTO processFilterDTO) {
+        Page<ProcessDetail> page = processDetailRepository.findAll((root, query, criteriaBuilder) -> {
+            query.distinct(true);
+            query.orderBy(criteriaBuilder.asc(root.get("id")));
+            List<Predicate> predicates = new ArrayList<>();
+
+            if (processFilterDTO.getDate() != null) {
+                predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("date"), processFilterDTO.getDate())));
+            }
+
+            if (processFilterDTO.getProductName() != null) {
+                predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("productDetail").get("product").get("name"), processFilterDTO.getProductName() )));
+            }
+
+            if (processFilterDTO.getProductId() != null) {
+                predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("productDetail").get("product").get("id"), processFilterDTO.getProductId())));
+            }
+
+            if (processFilterDTO.getUserName() != null) {
+                predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("user").get("name"), processFilterDTO.getUserName() )));
+            }
+
+            if (processFilterDTO.getUserId() != null) {
+                predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("user").get("id"), processFilterDTO.getUserId())));
+            }
+
+            if (processFilterDTO.getWarehouseName() != null) {
+                predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("warehouse").get("warehouseName"), processFilterDTO.getWarehouseName())));
+            }
+
+            if (processFilterDTO.getWarehouseId() != null) {
+                predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("warehouse").get("id"), processFilterDTO.getWarehouseId())));
+            }
+
+            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+        }, PageRequest.of(0, 10));
+
+        return processDetailMapper.toProcessDTOList(page.getContent());
+    }
+    
 
     @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
     public List<ProductDetailDTO> filter(ProductDetailFilterDTO filterDTO) {
@@ -163,11 +209,14 @@ public class ProductDetailService {
         return true;
     }
 
-    @PostConstruct
+    /*
+   @PostConstruct
     public void deneme() {
-        ProcessDetail detail = processDetailRepository.findByProductDetail_Id(1);
+        ProcessDetail detail = processDetailRepository.findByProductDetail_Id(11);
         System.out.println(detail);
     }
+   */
+
 
 
 
