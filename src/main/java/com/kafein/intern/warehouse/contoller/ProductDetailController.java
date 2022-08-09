@@ -38,7 +38,7 @@ public class ProductDetailController {
     public ResponseEntity<?> removeProductFromWarehouse(@PathVariable ProcessType processType, @PathVariable int warehouseId,
                                                         @PathVariable int productId, @PathVariable int count, @PathVariable int userId) {
         return new ResponseEntity<>(productDetailService.
-                removeProductFromWarehouse(processType,warehouseId, productId, count, userId), HttpStatus.OK);
+                updateProductAtWarehouse(processType,warehouseId, productId, count, userId), HttpStatus.OK);
     }
 
 }

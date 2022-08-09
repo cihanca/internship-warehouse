@@ -97,33 +97,46 @@ public class ProductDetailService {
 
     }
 
-
-    public boolean removeProductFromWarehouse(ProcessType processType, int warehouseId, int productId, int count, int userId) {
+    public boolean updateProductAtWarehouse(ProcessType processType, int warehouseId, int productId, int count, int userId) {
         User userOnDuty = userRepository.findById(userId).orElseThrow(() ->
                 new GenericServiceException("This user is not found with id: " + userId, ErrorType.USER_NOT_FOUND));
         if (userOnDuty.getRole() != Role.ADMIN) {
             throw new GenericServiceException("User with id: " + userId + " does not have permission.",
                     ErrorType.DO_NOT_HAVE_PERMISSION);
         }
+
         if (productDetailRepository.findByProduct_IdAndWarehouse_Id(productId, warehouseId) == null) {
             throw new GenericServiceException("Cannot find product detail record with product with id: " + productId +
                     " or warehouse with id: " + warehouseId, ErrorType.WAREHOUSE_OR_PRODUCT_DOES_NOT_EXIST);
         }
         ProductDetail detail = productDetailRepository.findByProduct_IdAndWarehouse_Id(productId, warehouseId);
         if (processType == ProcessType.ADD) {
-            detail.setProductCount(detail.getProductCount() + count);
+            addProductToWarehouse(detail,count);
+
         }
-        if (processType == ProcessType.REMOVE) {
-            if (detail.getProductCount() - count < 0) {
-                throw new GenericServiceException("There is no enough product in warehouse " + warehouseId +
-                        "\nNumber of products in stock: " + detail.getProductCount(), ErrorType.INSUFFICIENT_NUMBER_OF_PRODUCTS);
-            }
-            detail.setProductCount(detail.getProductCount() - count);
+        else if (processType == ProcessType.REMOVE) {
+            removeProductToWarehouse(detail,count, warehouseId);
+
         }
         productDetailRepository.save(detail);
         setProcessDetail(detail, userId, count, processType);
         return true;
     }
+
+    public boolean addProductToWarehouse(ProductDetail detail, int count) {
+        detail.setProductCount(detail.getProductCount() + count);
+        return true;
+    }
+
+    public boolean removeProductToWarehouse(ProductDetail detail, int count, int warehouseId) {
+        if (detail.getProductCount() - count < 0) {
+            throw new GenericServiceException("There is no enough product in warehouse " + warehouseId +
+                    "\nNumber of products in stock: " + detail.getProductCount(), ErrorType.INSUFFICIENT_NUMBER_OF_PRODUCTS);
+        }
+        detail.setProductCount(detail.getProductCount() - count);
+        return true;
+    }
+
 
     public boolean setProcessDetail(ProductDetail productDetail, int userId, int count, ProcessType processType) {
         ProcessDetail processDetail = new ProcessDetail();
