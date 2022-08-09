@@ -1,8 +1,11 @@
 package com.kafein.intern.warehouse.entity;
 
 import lombok.Data;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.Fetch;
 
 import javax.persistence.*;
+import java.lang.module.FindException;
 
 @Data
 @Entity
@@ -16,7 +19,7 @@ public class ProductDetail {
     @ManyToOne
     private Warehouse warehouse;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Product product;
 
     private int productLimit;

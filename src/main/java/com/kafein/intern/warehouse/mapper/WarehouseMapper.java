@@ -20,6 +20,9 @@ public interface WarehouseMapper {
     @Named("toNameDTO")
     WarehouseNameDTO toNameDTO(Warehouse warehouse);
 
+    @Named("toEntity")
+    Warehouse toEntity(WarehouseNameDTO warehouseNameDTO);
+
     @IterableMapping(qualifiedByName = "warehouseToDTO")
     List<WarehouseDTO> toDTOList(List<Warehouse> entityList);
 }

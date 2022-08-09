@@ -4,6 +4,7 @@ import com.kafein.intern.warehouse.dto.UserDTO;
 import com.kafein.intern.warehouse.dto.UserNameDTO;
 import com.kafein.intern.warehouse.dto.UserPublicDTO;
 import com.kafein.intern.warehouse.entity.User;
+import com.kafein.intern.warehouse.enums.ErrorType;
 import com.kafein.intern.warehouse.exception.GenericServiceException;
 import com.kafein.intern.warehouse.mapper.UserMapper;
 import com.kafein.intern.warehouse.repository.UserRepository;
@@ -26,7 +27,7 @@ public class UserService {
     }
 
     public UserDTO getUser(int id) {
-        User user = userRepository.findById(id).orElseThrow(() -> new GenericServiceException("This user is not found with id: " + id));
+        User user = userRepository.findById(id).orElseThrow(() -> new GenericServiceException("This user is not found with id: " + id, ErrorType.USER_NOT_FOUND));
         UserDTO dto = userMapper.toDTO(user);
         return dto;
     }
@@ -67,7 +68,7 @@ public class UserService {
     }
 
    public UserPublicDTO updateUserPassword(int id, String newPassword) {
-       User user = userRepository.findById(id).orElseThrow(() -> new GenericServiceException("This user is not found with id: " + id));
+       User user = userRepository.findById(id).orElseThrow(() -> new GenericServiceException("This user is not found with id: " + id, ErrorType.USER_NOT_FOUND));
        user.setPassword(newPassword);
        userRepository.save(user);
        return userMapper.toUserPublicDTO(user);

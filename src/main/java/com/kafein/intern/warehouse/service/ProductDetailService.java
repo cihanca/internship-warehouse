@@ -7,6 +7,7 @@ import com.kafein.intern.warehouse.entity.ProductDetail;
 import com.kafein.intern.warehouse.entity.User;
 import com.kafein.intern.warehouse.enums.ErrorType;
 import com.kafein.intern.warehouse.enums.ProcessType;
+import com.kafein.intern.warehouse.enums.Role;
 import com.kafein.intern.warehouse.exception.GenericServiceException;
 import com.kafein.intern.warehouse.mapper.ProductDetailMapper;
 import com.kafein.intern.warehouse.repository.ProcessDetailRepository;
@@ -21,6 +22,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -76,15 +79,15 @@ public class ProductDetailService {
             }
 
             if (filterDTO.getWarehouseDistrict() != null) {
-                predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("product").get("warehouseDistrict"), filterDTO.getWarehouseDistrict())));
+                predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("warehouse").get("warehouseDistrict"), filterDTO.getWarehouseDistrict())));
             }
 
             if (filterDTO.getWarehouseRegion() != null) {
-                predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("product").get("warehouseRegion"), filterDTO.getWarehouseRegion())));
+                predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("warehouse").get("warehouseRegion"), filterDTO.getWarehouseRegion())));
             }
 
             if (filterDTO.getWarehouseId() != null) {
-                predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("product").get("warehouseId"), filterDTO.getWarehouseId())));
+                predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("warehouse").get("warehouseId"), filterDTO.getWarehouseId())));
             }
 
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
@@ -96,6 +99,12 @@ public class ProductDetailService {
 
 
     public boolean removeProductFromWarehouse(ProcessType processType, int warehouseId, int productId, int count, int userId) {
+        User userOnDuty = userRepository.findById(userId).orElseThrow(() ->
+                new GenericServiceException("This user is not found with id: " + userId, ErrorType.USER_NOT_FOUND));
+        if (userOnDuty.getRole() != Role.ADMIN) {
+            throw new GenericServiceException("User with id: " + userId + " does not have permission.",
+                    ErrorType.DO_NOT_HAVE_PERMISSION);
+        }
         if (productDetailRepository.findByProduct_IdAndWarehouse_Id(productId, warehouseId) == null) {
             throw new GenericServiceException("Cannot find product detail record with product with id: " + productId +
                     " or warehouse with id: " + warehouseId, ErrorType.WAREHOUSE_OR_PRODUCT_DOES_NOT_EXIST);
@@ -122,6 +131,10 @@ public class ProductDetailService {
         processDetail.setUser(userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found with id: " + userId)));
         processDetail.setCount(count);
         processDetail.setProcessType(processType);
+        Date in = new Date();
+        LocalDateTime ldt = LocalDateTime.ofInstant(in.toInstant(), ZoneId.systemDefault());
+        Date out = Date.from(ldt.atZone(ZoneId.systemDefault()).toInstant());
+        processDetail.setDate(out);
         processDetailRepository.save(processDetail);
         return true;
     }

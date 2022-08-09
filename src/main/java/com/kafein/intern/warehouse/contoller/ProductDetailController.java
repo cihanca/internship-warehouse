@@ -24,7 +24,7 @@ public class ProductDetailController {
         return new ResponseEntity<>(productDetailService.save(productDetailDTO), HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/get/{id}")
     public ResponseEntity<ProductDetailDTO> getById(@PathVariable int id) {
         return new ResponseEntity<>(productDetailService.findById(id), HttpStatus.OK);
     }
