@@ -30,7 +30,10 @@ public class UserDetailService {
     }
 
     public UserDetailDTO addEmployeeToWarehouse(UserDetailDTO userDetailDTO) {
-        return userDetailMapper.toDTO(userDetailRepository.save(userDetailMapper.toEntity(userDetailDTO)));
+        UserDetail userDetail = userDetailMapper.toEntity(userDetailDTO);
+        userDetail.setStatus(true);
+        userDetailRepository.save(userDetail);
+        return userDetailMapper.toDTO(userDetail);
     }
 
     @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -68,8 +71,9 @@ public class UserDetailService {
         return userDetailMapper.toUserDetailDTOList(page.getContent());
     }
 
-    public boolean removeEmployeeToWarehouse(UserDetailDTO userDetailDTO) {
+    public boolean removeEmployeeFromWarehouse(UserDetailDTO userDetailDTO) {
         UserDetail userDetail =userDetailRepository.findByUser_Id(userDetailDTO.getUser().getId());
+        userDetail.setStatus(false);
         userDetail.getUser().setStatus(false);
         userDetailRepository.save(userDetail);
         return true;

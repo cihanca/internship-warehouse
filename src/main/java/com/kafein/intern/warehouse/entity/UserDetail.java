@@ -1,7 +1,9 @@
 package com.kafein.intern.warehouse.entity;
 
+import com.kafein.intern.warehouse.enums.Department;
 import com.kafein.intern.warehouse.enums.Position;
 import com.kafein.intern.warehouse.enums.Role;
+import com.kafein.intern.warehouse.enums.Sex;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -29,5 +31,12 @@ public class UserDetail {
     @ManyToOne
     private User manager;
 
+    @Enumerated(EnumType.STRING)
+    private Sex sex;
+
+    @Enumerated(EnumType.STRING)
+    private Department department;
+
+    private boolean status;
 
 }
