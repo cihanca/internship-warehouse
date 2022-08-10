@@ -20,13 +20,13 @@ public class UserDetailDTO {
 
     private Position position;
 
-    private Warehouse warehouse;
+    private WarehouseNameDTO warehouse;
 
-    private User user;
+    private UserNameDTO user;
 
-    private User manager;
+    private UserNameDTO manager;
 
-    private boolean status;
+    private Boolean status;
 
     private Sex sex;
 

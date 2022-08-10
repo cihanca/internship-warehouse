@@ -6,4 +6,5 @@ public enum Position {
     JUNIOR_DEVELOPER,
     MANAGER,
     GENERAL_MANAGER,
+    SALESMAN
 }

@@ -37,6 +37,6 @@ public class UserDetail {
     @Enumerated(EnumType.STRING)
     private Department department;
 
-    private boolean status;
+    private Boolean status;
 
 }

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.PostConstruct;
 import javax.persistence.criteria.Predicate;
 import java.util.ArrayList;
 import java.util.List;
@@ -60,14 +61,35 @@ public class UserDetailService {
                 predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("user").get("name"), userDetailFilterDTO.getManagerName())));
             }
 
+            if (userDetailFilterDTO.getWarehouseName() != null) {
+                predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("warehouse").get("warehouseName"), userDetailFilterDTO.getWarehouseName())));
+            }
+
+            if (userDetailFilterDTO.getWarehouseID() != null) {
+                predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("warehouse").get("id"), userDetailFilterDTO.getWarehouseID())));
+            }
+
+            if (userDetailFilterDTO.getSex()!= null) {
+                predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("sex"), userDetailFilterDTO.getSex())));
+            }
+
+            if (userDetailFilterDTO.getDepartment() != null) {
+                predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("department"), userDetailFilterDTO.getDepartment())));
+            }
+
             if (userDetailFilterDTO.getPosition() != null) {
                 predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("position"), userDetailFilterDTO.getPosition())));
             }
 
+            if (userDetailFilterDTO.getStatus() != null) {
+                predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("status"), userDetailFilterDTO.getStatus())));
+            }
 
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         }, PageRequest.of(0, 10));
-        log.info("Process filtering is successfully completed.");
+        int num = userDetailRepository.countByWarehouse_Id(1);
+        //log.info("number of employees at warehouse with id " + 1 + ": " + num);
+        //log.info("Process filtering is successfully completed.");
         return userDetailMapper.toUserDetailDTOList(page.getContent());
     }
 
@@ -77,5 +99,18 @@ public class UserDetailService {
         userDetail.getUser().setStatus(false);
         userDetailRepository.save(userDetail);
         return true;
+    }
+    /*
+    @PostConstruct
+    public int getNumberOfEmployeesAtWarehouse(int warehouseId) {
+        int num = userDetailRepository.countByWarehouse_Id(1);
+        log.info("number of employees at warehouse with id " + 1 + ": " + num);
+        return num;
+    }*/
+
+    public int getNumberOfEmployeesAtWarehouse(int warehouseId) {
+        int num = userDetailRepository.countByWarehouse_Id(warehouseId);
+        log.info("number of employees at warehouse with id " + warehouseId + ": " + num);
+        return num;
     }
 }

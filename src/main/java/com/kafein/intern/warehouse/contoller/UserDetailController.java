@@ -5,10 +5,7 @@ import com.kafein.intern.warehouse.dto.UserDetailFilterDTO;
 import com.kafein.intern.warehouse.service.UserDetailService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/userDetail")
@@ -34,4 +31,10 @@ public class UserDetailController {
     public ResponseEntity<?> filterAccordingly(@RequestBody UserDetailFilterDTO userDetailFilterDTO) {
         return new ResponseEntity<>(userDetailService.filter(userDetailFilterDTO), HttpStatus.OK);
     }
+
+    @GetMapping("/getEmployeeNumber/{warehouseId}")
+    public ResponseEntity<?> getEmployeeNumber(@PathVariable int warehouseId) {
+        return new ResponseEntity<>(userDetailService.getNumberOfEmployeesAtWarehouse(warehouseId), HttpStatus.OK);
+    }
+
 }
