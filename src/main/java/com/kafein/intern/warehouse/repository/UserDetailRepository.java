@@ -15,4 +15,6 @@ public interface UserDetailRepository extends JpaRepository<UserDetail,Integer> 
     UserDetail findByUser_Id(int user_id);
     Page<UserDetail> findAll(@Nullable Specification productSpecification, Pageable pageable);
     int countByWarehouse_Id(int warehouse_id);
+
+    Boolean findByWarehouse_Id(int warehouseId);
 }

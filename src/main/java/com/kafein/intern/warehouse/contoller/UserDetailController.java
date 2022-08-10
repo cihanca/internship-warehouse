@@ -23,7 +23,7 @@ public class UserDetailController {
     }
 
     @PostMapping("/fireFromWarehouse")
-    public ResponseEntity<?> removeEmployeeToWarehouse(@RequestBody UserDetailDTO userDetailDTO) {
+    public ResponseEntity<?> removeEmployeeFromWarehouse(@RequestBody UserDetailDTO userDetailDTO) {
         return new ResponseEntity<>(userDetailService.removeEmployeeFromWarehouse(userDetailDTO), HttpStatus.OK);
     }
 

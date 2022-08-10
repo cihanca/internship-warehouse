@@ -4,6 +4,8 @@ import com.kafein.intern.warehouse.dto.UserDetailDTO;
 import com.kafein.intern.warehouse.dto.UserDetailFilterDTO;
 import com.kafein.intern.warehouse.entity.User;
 import com.kafein.intern.warehouse.entity.UserDetail;
+import com.kafein.intern.warehouse.enums.ErrorType;
+import com.kafein.intern.warehouse.exception.GenericServiceException;
 import com.kafein.intern.warehouse.mapper.UserDetailMapper;
 import com.kafein.intern.warehouse.repository.UserDetailRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -93,22 +95,26 @@ public class UserDetailService {
         return userDetailMapper.toUserDetailDTOList(page.getContent());
     }
 
+
+    /**
+    findByUser_ıd().orElseThrow() ?????????????????
+     */
+
     public boolean removeEmployeeFromWarehouse(UserDetailDTO userDetailDTO) {
-        UserDetail userDetail =userDetailRepository.findByUser_Id(userDetailDTO.getUser().getId());
+        UserDetail userDetail = userDetailRepository.findByUser_Id(userDetailDTO.getUser().getId());
+        if (userDetail == null) {
+            throw new GenericServiceException("User not found with id: " + userDetailDTO.getUser().getId(), ErrorType.USER_NOT_FOUND);
+        }
         userDetail.setStatus(false);
         userDetail.getUser().setStatus(false);
         userDetailRepository.save(userDetail);
         return true;
     }
-    /*
-    @PostConstruct
-    public int getNumberOfEmployeesAtWarehouse(int warehouseId) {
-        int num = userDetailRepository.countByWarehouse_Id(1);
-        log.info("number of employees at warehouse with id " + 1 + ": " + num);
-        return num;
-    }*/
 
     public int getNumberOfEmployeesAtWarehouse(int warehouseId) {
+        if (userDetailRepository.findByWarehouse_Id(warehouseId) == null) {
+            throw new GenericServiceException("Warehouse not found with id: " + warehouseId, ErrorType.WAREHOUSE_DOES_NOT_EXIST);
+        }
         int num = userDetailRepository.countByWarehouse_Id(warehouseId);
         log.info("number of employees at warehouse with id " + warehouseId + ": " + num);
         return num;
