@@ -112,9 +112,12 @@ public class UserDetailService {
     }
 
     public int getNumberOfEmployeesAtWarehouse(int warehouseId) {
-
         int num = userDetailRepository.countByWarehouse_Id(warehouseId);
         log.info("number of employees at warehouse with id " + warehouseId + ": " + num);
         return num;
+    }
+
+    public int getNumberOfEmployees() {
+        return userDetailRepository.findAll().size();
     }
 }

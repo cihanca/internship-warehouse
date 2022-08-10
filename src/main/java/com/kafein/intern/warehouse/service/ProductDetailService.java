@@ -1,9 +1,7 @@
 package com.kafein.intern.warehouse.service;
 
 import com.kafein.intern.warehouse.dto.*;
-import com.kafein.intern.warehouse.entity.ProcessDetail;
-import com.kafein.intern.warehouse.entity.ProductDetail;
-import com.kafein.intern.warehouse.entity.User;
+import com.kafein.intern.warehouse.entity.*;
 import com.kafein.intern.warehouse.enums.ErrorType;
 import com.kafein.intern.warehouse.enums.ProcessType;
 import com.kafein.intern.warehouse.enums.Role;
@@ -207,6 +205,9 @@ public class ProductDetailService {
         processDetail.setUser(userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found with id: " + userId)));
         processDetail.setCount(count);
         processDetail.setProcessType(processType);
+        calculateProfit(processDetail,count, productDetail.getProduct().getNetIncome());
+        calculateIncome(processDetail,processType,count,productDetail.getProduct().getExportPrice());
+        calculateExpenditure(processDetail,processType,count,productDetail.getProduct().getImportPrice());
         Date in = new Date();
         LocalDateTime ldt = LocalDateTime.ofInstant(in.toInstant(), ZoneId.systemDefault());
         Date out = Date.from(ldt.atZone(ZoneId.systemDefault()).toInstant());
@@ -216,15 +217,88 @@ public class ProductDetailService {
         return true;
     }
 
-    /*
-   @PostConstruct
-    public void deneme() {
-        ProcessDetail detail = processDetailRepository.findByProductDetail_Id(11);
-        System.out.println(detail);
+    public void calculateProfit(ProcessDetail processDetail, int productCount, int profit) {
+        processDetail.setProfit(productCount * profit);
     }
-   */
 
+    public void calculateIncome(ProcessDetail processDetail,ProcessType processType, int productCount, int exportPrice) {
+        if (processType == ProcessType.REMOVE) {
+            processDetail.setIncome(productCount * exportPrice);
+        }
+        else {
+            processDetail.setIncome(0);
+        }
+    }
 
+    public void calculateExpenditure(ProcessDetail processDetail,ProcessType processType, int productCount, int exportPrice) {
+        if (processType == ProcessType.ADD) {
+            processDetail.setExpenditure(productCount * exportPrice);
+        }
+        else {
+            processDetail.setExpenditure(0);
+        }
+    }
 
+    public int getTotalProfitAtWarehouse(int warehouseId) {
+        List<ProcessDetail> processDetailList = processDetailRepository.findAll();
+        int totalProfit = 0;
+        for (ProcessDetail pD : processDetailList) {
+            if (pD.getProductDetail().getWarehouse().getId() == warehouseId) {
+                totalProfit += pD.getProfit();
+            }
+        }
+        return totalProfit;
+    }
+
+    public int getAllStock()  {
+        List<ProductDetail> productDetailList = productDetailRepository.findAll();
+        int totalStock = 0;
+        for (ProductDetail pD : productDetailList) {
+            totalStock += pD.getProductCount();
+        }
+        return totalStock;
+    }
+
+    public int getTotalProfit() {
+        List<ProcessDetail> processDetailList = processDetailRepository.findAll();
+        int totalProfit = 0;
+        for (ProcessDetail pD : processDetailList) {
+            if (pD.getProcessType() == ProcessType.REMOVE)
+                totalProfit += pD.getProfit();
+        }
+        return totalProfit;
+    }
+
+    public int getStockAtWarehouse(int warehouseId) {
+        List<ProductDetail> processDetailList = productDetailRepository.findAll();
+        int totalProduct = 0;
+        for (ProductDetail pD : processDetailList) {
+            if (pD.getWarehouse().getId() == warehouseId) {
+                totalProduct += pD.getProductCount();
+            }
+        }
+        return totalProduct;
+    }
+
+    public int getBoughtCountAtWarehouse(int warehouseId) {
+        List<ProcessDetail> processDetailList = processDetailRepository.findAll();
+        int bought = 0;
+        for (ProcessDetail pD :  processDetailList) {
+            if (pD.getProductDetail().getWarehouse().getId() == warehouseId && pD.getProcessType() == ProcessType.ADD) {
+                bought += pD.getCount();
+            }
+        }
+        return bought;
+
+    }
+
+    public int getTotalBoughtCount() {
+        List<ProcessDetail> processDetailList = processDetailRepository.findAllByProcessType(ProcessType.ADD);
+        int totalBought = 0;
+        for (ProcessDetail pD : processDetailList) {
+            totalBought += pD.getCount();
+        }
+        return totalBought;
+    }
 
 }

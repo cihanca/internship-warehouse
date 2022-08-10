@@ -38,12 +38,12 @@ public class ProductService {
     public ProductDTO save(ProductDTO productDTO) {
         validateBeforeSave(productDTO.getName());
         productDTO.setStatus(true);
+        productDTO.setNetIncome(productDTO.getExportPrice() - productDTO.getImportPrice());
         try {
             Product product = productMapper.toEntity(productDTO);
             return productMapper.toDTO(productRepository.save(product));
-        } catch (DataIntegrityViolationException e) {
-            throw new GenericServiceException("This product code already in use: " + productDTO.getCode(), ErrorType.PRODUCT_CODE_ALREADY_IN_USE);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             throw new GenericServiceException("Product could not save!", ErrorType.PRODUCT_COULD_NOT_SAVE);
         }
     }

@@ -19,6 +19,12 @@ public class ProcessDetailDTO {
 
     private int count;
 
+    private int profit;
+
+    private int expenditure;
+
+    private int income;
+
     private ProcessType processType;
 
     private Date date;

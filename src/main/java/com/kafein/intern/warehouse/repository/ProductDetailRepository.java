@@ -1,6 +1,7 @@
 package com.kafein.intern.warehouse.repository;
 
 import com.kafein.intern.warehouse.entity.ProductDetail;
+import com.kafein.intern.warehouse.entity.Warehouse;
 import com.sun.istack.Nullable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,5 +18,6 @@ public interface ProductDetailRepository extends JpaRepository<ProductDetail, In
     Page<ProductDetail> findAll(@Nullable Specification productSpecification, Pageable pageable);
 
     ProductDetail findByProduct_IdAndWarehouse_Id(int product_id, int warehouse_id);
+
 
 }

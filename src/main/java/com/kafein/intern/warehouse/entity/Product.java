@@ -20,4 +20,10 @@ public class Product {
 
     private Boolean status;
 
+    private int importPrice;
+
+    private int exportPrice;
+
+    private int netIncome;
+
 }

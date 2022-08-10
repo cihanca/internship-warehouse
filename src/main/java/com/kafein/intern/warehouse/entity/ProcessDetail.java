@@ -23,6 +23,12 @@ public class ProcessDetail {
 
     private int count;
 
+    private int profit;
+
+    private int expenditure;
+
+    private int income;
+
     @Enumerated(EnumType.STRING)
     private ProcessType processType;
 

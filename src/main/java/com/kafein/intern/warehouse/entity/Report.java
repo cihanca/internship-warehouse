@@ -1,12 +1,16 @@
-package com.kafein.intern.warehouse.dto;
+package com.kafein.intern.warehouse.entity;
 
 import lombok.Data;
 
+import javax.persistence.*;
 import java.util.Date;
 
 @Data
-public class ReportDTO {
-
+@Entity
+@Table(name = "report")
+public class Report {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     private Date date;
@@ -26,4 +30,6 @@ public class ReportDTO {
     private int expenditure;
 
     private int income;
+
+
 }
