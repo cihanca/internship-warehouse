@@ -112,9 +112,7 @@ public class UserDetailService {
     }
 
     public int getNumberOfEmployeesAtWarehouse(int warehouseId) {
-        if (userDetailRepository.findByWarehouse_Id(warehouseId) == null) {
-            throw new GenericServiceException("Warehouse not found with id: " + warehouseId, ErrorType.WAREHOUSE_DOES_NOT_EXIST);
-        }
+
         int num = userDetailRepository.countByWarehouse_Id(warehouseId);
         log.info("number of employees at warehouse with id " + warehouseId + ": " + num);
         return num;

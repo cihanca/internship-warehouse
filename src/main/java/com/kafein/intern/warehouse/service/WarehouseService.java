@@ -8,6 +8,7 @@ import com.kafein.intern.warehouse.mapper.UserMapper;
 import com.kafein.intern.warehouse.mapper.WarehouseMapper;
 import com.kafein.intern.warehouse.repository.UserRepository;
 import com.kafein.intern.warehouse.repository.WarehouseRepository;
+import lombok.Data;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

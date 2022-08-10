@@ -25,7 +25,7 @@ public class UserDetail {
     @ManyToOne
     private Warehouse warehouse;
 
-    @ManyToOne
+    @OneToOne
     private User user;
 
     @ManyToOne
