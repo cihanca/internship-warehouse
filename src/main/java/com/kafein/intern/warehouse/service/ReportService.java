@@ -9,6 +9,7 @@ import com.kafein.intern.warehouse.entity.ProductDetail;
 import com.kafein.intern.warehouse.entity.Report;
 import com.kafein.intern.warehouse.mapper.ReportMapper;
 import com.kafein.intern.warehouse.repository.ReportRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -26,6 +27,7 @@ import java.util.List;
 
 
 @Service
+@Slf4j
 public class ReportService {
 
     private final ProductDetailService productDetailService;
@@ -49,10 +51,10 @@ public class ReportService {
 
     @Scheduled(cron = "0 * * ? * *")
     public void save() {
-        System.out.println("WORKINGGGGGGGG");
         Date in = new Date();
         LocalDateTime ldt = LocalDateTime.ofInstant(in.toInstant(), ZoneId.systemDefault());
         Date out = Date.from(ldt.atZone(ZoneId.systemDefault()).toInstant());
+        log.info("Inventory updated. Last save is made at: " + out);
         saveWarehouseInfo(out);
         saveAllWarehousesInfo(out);
     }
