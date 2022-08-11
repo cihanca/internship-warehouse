@@ -3,10 +3,16 @@ import com.kafein.intern.warehouse.dto.ProcessDetailFilterDTO;
 import com.kafein.intern.warehouse.dto.ProductDetailDTO;
 
 import com.kafein.intern.warehouse.dto.ProductDetailFilterDTO;
+import com.kafein.intern.warehouse.entity.ProcessDetail;
 import com.kafein.intern.warehouse.service.ProductDetailService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+import static com.kafein.intern.warehouse.enums.ProcessType.ADD_PRODUCT;
+import static com.kafein.intern.warehouse.enums.ProcessType.DELETE_PRODUCT;
 
 @RestController
 @RequestMapping("/productDetail")
@@ -16,6 +22,16 @@ public class ProductDetailController {
 
     public ProductDetailController(ProductDetailService productDetailService) {
         this.productDetailService = productDetailService;
+    }
+
+    @GetMapping("/getSoldCount/{productDetailId}")
+    public ResponseEntity<Integer> getSoldCount(@PathVariable int productDetailId) {
+        return new ResponseEntity<>(productDetailService.getSoldCount(productDetailId), HttpStatus.OK);
+    }
+
+    @GetMapping("/getBoughtCount/{productDetailId}")
+    public ResponseEntity<Integer> getBoughtCount(@PathVariable int productDetailId) {
+        return new ResponseEntity<>(productDetailService.getBoughtCount(productDetailId), HttpStatus.OK);
     }
 
     @PostMapping("/save")

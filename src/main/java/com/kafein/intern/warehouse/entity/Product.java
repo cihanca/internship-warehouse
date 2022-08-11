@@ -20,4 +20,8 @@ public class Product {
 
     private Boolean status;
 
+    private int priceBuy;
+
+    private int priceSell;
+
 }

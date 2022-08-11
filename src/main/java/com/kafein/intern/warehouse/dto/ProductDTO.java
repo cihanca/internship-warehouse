@@ -13,4 +13,8 @@ public class ProductDTO {
 
     private Boolean status;
 
+    private int priceBuy;
+
+    private int priceSell;
+
 }

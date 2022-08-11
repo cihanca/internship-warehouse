@@ -5,6 +5,7 @@ import com.kafein.intern.warehouse.dto.ProcessDetailFilterDTO;
 import com.kafein.intern.warehouse.dto.ProductDetailDTO;
 import com.kafein.intern.warehouse.dto.ProductDetailFilterDTO;
 import com.kafein.intern.warehouse.entity.ProcessDetail;
+import com.kafein.intern.warehouse.entity.Product;
 import com.kafein.intern.warehouse.entity.ProductDetail;
 import com.kafein.intern.warehouse.enums.ErrorType;
 import com.kafein.intern.warehouse.enums.ProcessType;
@@ -28,6 +29,9 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.criteria.Predicate;
 
+import static com.kafein.intern.warehouse.enums.ProcessType.ADD_PRODUCT;
+import static com.kafein.intern.warehouse.enums.ProcessType.DELETE_PRODUCT;
+
 @RestController
 @RequestMapping("/productDetail")
 public class ProductDetailService {
@@ -42,6 +46,22 @@ public class ProductDetailService {
         this.processDetailMapper = processDetailMapper;
         this.productDetailRepository = productDetailRepository;
         this.processDetailRepository = processDetailRepository;
+    }
+
+    public int getSoldCount(int productDetailId) {
+        int num = 0;
+        List<ProcessDetail> processDetail = processDetailRepository.findByProcessTypeAndProductDetailId(DELETE_PRODUCT, productDetailId);
+        for(ProcessDetail p : processDetail)
+            num += p.getCount();
+        return num;
+    }
+
+    public int getBoughtCount(int productDetailId) {
+        int num = 0;
+        List<ProcessDetail> processDetail = processDetailRepository.findByProcessTypeAndProductDetailId(ADD_PRODUCT, productDetailId);
+        for(ProcessDetail p : processDetail)
+            num += p.getCount();
+        return num;
     }
 
     public ProductDetailDTO save(ProductDetailDTO productDetailDTO) {
@@ -75,7 +95,7 @@ public class ProductDetailService {
         ProductDetail productDetail = productDetailRepository.findByProduct_IdAndWarehouse_Id(productId, warehouseId);
         productDetail.setProductCount(productDetail.getProductCount() + count);
         productDetailRepository.save(productDetail);
-        saveProcess(productDetail, ProcessType.ADD_PRODUCT, count);
+        saveProcess(productDetail, ADD_PRODUCT, count);
         return true;
     }
 
@@ -89,7 +109,7 @@ public class ProductDetailService {
             productDetailRepository.save(detail);
         }
 
-        saveProcess(detail, ProcessType.DELETE_PRODUCT, count);
+        saveProcess(detail, DELETE_PRODUCT, count);
 
         if(detail.getProductCount() < detail.getProductLimit())
             System.out.println("Count of products with id " + productId + " is critically low!");
