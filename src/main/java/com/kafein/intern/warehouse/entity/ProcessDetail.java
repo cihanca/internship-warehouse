@@ -23,11 +23,11 @@ public class ProcessDetail {
 
     private int count;
 
-    private int profit;
+    private String profit;
 
-    private int expenditure;
+    private String expenditure;
 
-    private int income;
+    private String income;
 
     @Enumerated(EnumType.STRING)
     private ProcessType processType;
