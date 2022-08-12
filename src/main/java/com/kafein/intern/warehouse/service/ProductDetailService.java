@@ -205,7 +205,7 @@ public class ProductDetailService {
         processDetail.setUser(userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found with id: " + userId)));
         processDetail.setCount(count);
         processDetail.setProcessType(processType);
-        calculateProfit(processDetail,count, productDetail.getProduct().getNetIncome());
+        calculateProfit(processDetail,count, productDetail.getProduct().getNetIncome(),processType);
         calculateIncome(processDetail,processType,count,productDetail.getProduct().getExportPrice());
         calculateExpenditure(processDetail,processType,count,productDetail.getProduct().getImportPrice());
         Date in = new Date();
@@ -217,25 +217,29 @@ public class ProductDetailService {
         return true;
     }
 
-    public void calculateProfit(ProcessDetail processDetail, int productCount, int profit) {
-        processDetail.setProfit(productCount * profit);
+    public void calculateProfit(ProcessDetail processDetail, int productCount, int profit, ProcessType processType) {
+        if (processType == ProcessType.REMOVE)
+            processDetail.setProfit(Integer.toString(productCount * profit));
+        else {
+            processDetail.setProfit("-");
+        }
     }
 
     public void calculateIncome(ProcessDetail processDetail,ProcessType processType, int productCount, int exportPrice) {
         if (processType == ProcessType.REMOVE) {
-            processDetail.setIncome(productCount * exportPrice);
+            processDetail.setIncome(Integer.toString(productCount * exportPrice));
         }
         else {
-            processDetail.setIncome(0);
+            processDetail.setIncome("-");
         }
     }
 
     public void calculateExpenditure(ProcessDetail processDetail,ProcessType processType, int productCount, int exportPrice) {
         if (processType == ProcessType.ADD) {
-            processDetail.setExpenditure(productCount * exportPrice);
+            processDetail.setExpenditure(Integer.toString(productCount * exportPrice));
         }
         else {
-            processDetail.setExpenditure(0);
+            processDetail.setExpenditure("-");
         }
     }
 
@@ -243,8 +247,8 @@ public class ProductDetailService {
         List<ProcessDetail> processDetailList = processDetailRepository.findAll();
         int totalProfit = 0;
         for (ProcessDetail pD : processDetailList) {
-            if (pD.getProductDetail().getWarehouse().getId() == warehouseId) {
-                totalProfit += pD.getProfit();
+            if (pD.getProductDetail().getWarehouse().getId() == warehouseId && !pD.getProfit().equals("-")) {
+                totalProfit += Integer.parseInt(pD.getProfit());
             }
         }
         return totalProfit;
@@ -264,7 +268,7 @@ public class ProductDetailService {
         int totalProfit = 0;
         for (ProcessDetail pD : processDetailList) {
             if (pD.getProcessType() == ProcessType.REMOVE)
-                totalProfit += pD.getProfit();
+                totalProfit += Integer.parseInt(pD.getProfit());
         }
         return totalProfit;
     }
@@ -301,4 +305,62 @@ public class ProductDetailService {
         return totalBought;
     }
 
+    public int getSoldCountAtWarehouse(int warehouseId) {
+        List<ProcessDetail> processDetailList = processDetailRepository.findAll();
+        int sold = 0;
+        for (ProcessDetail pD :  processDetailList) {
+            if (pD.getProductDetail().getWarehouse().getId() == warehouseId && pD.getProcessType() == ProcessType.REMOVE) {
+                sold += pD.getCount();
+            }
+        }
+        return sold;
+
+    }
+
+    public int getTotalSoldCount() {
+        List<ProcessDetail> processDetailList = processDetailRepository.findAllByProcessType(ProcessType.REMOVE);
+        int totalSold = 0;
+        for (ProcessDetail pD : processDetailList) {
+            totalSold += pD.getCount();
+        }
+        return totalSold;
+    }
+
+    public int getTotalExpenditure() {
+        int totalExpenditure = 0;
+        for (int i = 1; i <= 3; i++) {
+            totalExpenditure += getExpenditureAtWarehouse(i);
+        }
+        return totalExpenditure;
+    }
+
+    public int getExpenditureAtWarehouse(int warehouseId) {
+        int expenditure = 0;
+        List<ProcessDetail> processDetailList = processDetailRepository.findAll();
+        for (ProcessDetail pD : processDetailList) {
+            if (pD.getProductDetail().getWarehouse().getId() == warehouseId && !pD.getExpenditure().equals("-")) {
+                expenditure += pD.getCount() * pD.getProductDetail().getProduct().getImportPrice();
+            }
+        }
+        return expenditure;
+    }
+
+    public int getTotalIncome() {
+        int totalIncome = 0;
+        for (int i = 1; i <= 3; i++) {
+            totalIncome += getExpenditureAtWarehouse(i);
+        }
+        return totalIncome;
+    }
+
+    public int getIncomeAtWarehouse(int warehouseId) {
+        int income = 0;
+        List<ProcessDetail> processDetailList = processDetailRepository.findAll();
+        for (ProcessDetail pD : processDetailList) {
+            if (pD.getProductDetail().getWarehouse().getId() == warehouseId && !pD.getIncome().equals("-")) {
+                income += pD.getCount() * pD.getProductDetail().getProduct().getExportPrice();
+            }
+        }
+        return income;
+    }
 }

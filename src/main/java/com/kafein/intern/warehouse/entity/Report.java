@@ -19,8 +19,6 @@ public class Report {
 
     private int totalProfit;
 
-    private int numberOfEmployees;
-
     private int warehouseId;
 
     private int numberOfBought;

@@ -19,11 +19,11 @@ public class ProcessDetailDTO {
 
     private int count;
 
-    private int profit;
+    private String profit;
 
-    private int expenditure;
+    private String expenditure;
 
-    private int income;
+    private String income;
 
     private ProcessType processType;
 
