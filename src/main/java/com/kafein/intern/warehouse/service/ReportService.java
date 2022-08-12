@@ -1,18 +1,13 @@
 package com.kafein.intern.warehouse.service;
 
-import antlr.preprocessor.PreprocessorTokenTypes;
-import com.kafein.intern.warehouse.dto.ProductDetailDTO;
-import com.kafein.intern.warehouse.dto.ProductDetailFilterDTO;
 import com.kafein.intern.warehouse.dto.ReportDTO;
 import com.kafein.intern.warehouse.dto.ReportFilterDTO;
-import com.kafein.intern.warehouse.entity.ProductDetail;
 import com.kafein.intern.warehouse.entity.Report;
 import com.kafein.intern.warehouse.mapper.ReportMapper;
 import com.kafein.intern.warehouse.repository.ReportRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -49,7 +44,7 @@ public class ReportService {
         this.reportMapper = reportMapper;
     }
 
-    @Scheduled(cron = "0 * * ? * *")
+    //@Scheduled(cron = "0 * * ? * *")
     public void save() {
         Date in = new Date();
         LocalDateTime ldt = LocalDateTime.ofInstant(in.toInstant(), ZoneId.systemDefault());
@@ -100,7 +95,7 @@ public class ReportService {
             }
 
             if (filterDTO.getIsAll() != null) {
-                predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("warehouseId"), 0)));
+                predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("warehouseId"),0)));
             }
 
             if (filterDTO.getStartDate() != null && filterDTO.getEndDate() != null) {
