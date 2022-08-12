@@ -5,19 +5,20 @@ import lombok.extern.apachecommons.CommonsLog;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Component
 public class JwtTokeProvider {
-    private String APP_SECRET = "yeahya";
+    private String APP_SECRET = "yeahyayeahyayeahyayeahyayeahyayeahyayeahyayeahyayeahyayeahyayeahyayeahyayeahyayeahyayeahyayeahya";
     private long EXPIRES_IN = 604800L;
 
     public String generateJwtToken(Authentication auth) {
         JwtUserDetails userDetails = (JwtUserDetails) auth.getPrincipal();
-        Date expireDate = new Date(new Date().getTime() + EXPIRES_IN);
+        Date expireDate = java.sql.Date.valueOf(LocalDate.now().plusDays(EXPIRES_IN));
         return Jwts.builder()
                 .setSubject(Integer.toString(userDetails.getId()))
-                .setIssuedAt(new Date())
+                .setIssuedAt(java.sql.Date.valueOf(LocalDate.now()))
                 .setExpiration(expireDate)
                 .signWith(SignatureAlgorithm.HS512, APP_SECRET)
                 .compact();
@@ -46,7 +47,7 @@ public class JwtTokeProvider {
 
     boolean isTokenExpired(String token) {
         Date expired = Jwts.parser().setSigningKey(APP_SECRET).parseClaimsJws(token).getBody().getExpiration();
-        return expired.before(new Date());
+        return expired.before(java.sql.Date.valueOf(LocalDate.now()));
     }
 
 }
