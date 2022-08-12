@@ -40,7 +40,6 @@ public class AuthController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwtToken = jwtTokeProvider.generateJwtToken(authentication);
         return "Bearer " + jwtToken;
-
     }
 
     @PostMapping("/register")
