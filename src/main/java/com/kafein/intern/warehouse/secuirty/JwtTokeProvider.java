@@ -1,0 +1,46 @@
+package com.kafein.intern.warehouse.secuirty;
+
+import io.jsonwebtoken.*;
+import lombok.extern.apachecommons.CommonsLog;
+import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Component;
+
+import java.util.Date;
+
+@Component
+public class JwtTokeProvider {
+    private String APP_SECRET = "yeahya";
+    private long EXPIRES_IN = 604800L;
+
+    public String generateJwtToken(Authentication auth) {
+        JwtUserDetails userDetails = (JwtUserDetails) auth.getPrincipal();
+        Date expireDate = new Date(new Date().getTime() + EXPIRES_IN);
+        return Jwts.builder()
+                .setSubject(Integer.toString(userDetails.getId()))
+                .setIssuedAt(new Date())
+                .setExpiration(expireDate)
+                .signWith(SignatureAlgorithm.HS512, APP_SECRET)
+                .compact();
+    }
+
+    int getUserIdFromJwt(String token) {
+        Claims claims = Jwts.parser().setSigningKey(APP_SECRET).parseClaimsJws(token).getBody();
+        return Integer.parseInt(claims.getSubject());
+    }
+
+    boolean validateToken(String token) {
+        try {
+            Jwts.parser().setSigningKey(APP_SECRET).parseClaimsJwt(token);
+            return !isTokenExpired(token);
+        } catch (SignatureException | MalformedJwtException | ExpiredJwtException | UnsupportedJwtException |
+                 IllegalArgumentException e) {
+            return false;
+        }
+    }
+
+    boolean isTokenExpired(String token) {
+        Date expired = Jwts.parser().setSigningKey(APP_SECRET).parseClaimsJws(token).getBody().getExpiration();
+        return expired.before(new Date());
+    }
+
+}
