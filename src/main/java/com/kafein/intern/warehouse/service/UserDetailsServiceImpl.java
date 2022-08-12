@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     public UserDetailsServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -26,7 +26,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     }
 
     public UserDetails loadByUserId(int id) {
-        User user = userRepository.findById(id).orElseThrow(()-> new GenericServiceException("----", ErrorType.INVALID_REQUEST));
+        User user = userRepository.getById(id);
+        if (user == null) {
+            throw new GenericServiceException("----", ErrorType.INVALID_REQUEST);
+        }
+        System.out.println("username: " + userRepository.getById(id).getUsername());
         return JwtUserDetails.create(user);
     }
 

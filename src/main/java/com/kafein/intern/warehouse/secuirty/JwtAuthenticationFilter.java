@@ -1,6 +1,7 @@
 package com.kafein.intern.warehouse.secuirty;
 
 import com.kafein.intern.warehouse.service.UserDetailsServiceImpl;
+import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -28,7 +29,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
             String jwtToken = extractJwtFromRequest(request);
-            if (StringUtils.hasText(jwtToken) && jwtTokeProvider.validateToken(jwtToken)) {
+            System.out.println("jwt: " + jwtToken);
+            if (StringUtils.hasText(jwtToken) && !jwtTokeProvider.validateToken(jwtToken)) {
                 Integer id = jwtTokeProvider.getUserIdFromJwt(jwtToken);
                 UserDetails userDetails = userDetailsServiceImpl.loadByUserId(id);
                 if (userDetails != null) {
@@ -36,10 +38,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                             new UsernamePasswordAuthenticationToken(userDetails,null, userDetails.getAuthorities());
                     authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                    System.out.println(SecurityContextHolder.getContext());
                 }
+                System.out.println("NUll");
             }
+            System.out.println("NUllsdafaff");
         }
         catch (Exception e) {
+            System.out.println("something is wrong");
             return;
         }
         filterChain.doFilter(request,response);

@@ -23,7 +23,13 @@ public class JwtTokeProvider {
                 .compact();
     }
 
-    int getUserIdFromJwt(String token) {
+    public String generateJwtTokenByUserId(Long userId) {
+        Date expireDate = new Date(new Date().getTime() + EXPIRES_IN);
+        return Jwts.builder().setSubject(Long.toString(userId))
+                .setIssuedAt(new Date()).setExpiration(expireDate)
+                .signWith(SignatureAlgorithm.HS512, APP_SECRET).compact();
+    }
+    Integer getUserIdFromJwt(String token) {
         Claims claims = Jwts.parser().setSigningKey(APP_SECRET).parseClaimsJws(token).getBody();
         return Integer.parseInt(claims.getSubject());
     }

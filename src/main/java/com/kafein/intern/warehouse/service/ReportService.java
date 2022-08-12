@@ -49,7 +49,7 @@ public class ReportService {
         this.reportMapper = reportMapper;
     }
 
-    @Scheduled(cron = "0 * * ? * *")
+   // @Scheduled(cron = "0 * * ? * *")
     public void save() {
         Date in = new Date();
         LocalDateTime ldt = LocalDateTime.ofInstant(in.toInstant(), ZoneId.systemDefault());
