@@ -27,7 +27,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
             String jwtToken = extractJwtFromRequest(request);
-            System.out.println("hayat beni neden yoruyorsun");
             if (StringUtils.hasText(jwtToken) && !jwtTokenProvider.validateToken(jwtToken)) {
                 Integer id = jwtTokenProvider.getUserIdFromJwt(jwtToken);
                 UserDetails userDetails = userDetailsServiceImpl.loadByUserId(id);

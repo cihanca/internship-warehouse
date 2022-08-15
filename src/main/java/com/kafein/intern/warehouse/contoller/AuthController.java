@@ -1,7 +1,9 @@
 package com.kafein.intern.warehouse.contoller;
 
 import com.kafein.intern.warehouse.dto.LoginDTO;
+import com.kafein.intern.warehouse.dto.RegisterDTO;
 import com.kafein.intern.warehouse.entity.User;
+import com.kafein.intern.warehouse.enums.Role;
 import com.kafein.intern.warehouse.security.JwtTokenProvider;
 import com.kafein.intern.warehouse.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -43,14 +45,18 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody LoginDTO login) {
-        if (userService.getUserByUsername(login.getUsername()) != null) {
+    public ResponseEntity<?> register(@RequestBody RegisterDTO register) {
+        if (userService.getUserByUsername(register.getUsername()) != null) {
             return new ResponseEntity<>("User name is already in use", HttpStatus.BAD_REQUEST);
         }
         else {
             User user = new User();
-            user.setPassword(passwordEncoder.encode(login.getPassword()));
-            user.setUsername(login.getUsername());
+            user.setPassword(passwordEncoder.encode(register.getPassword()));
+            user.setUsername(register.getUsername());
+            user.setName(register.getName());
+            user.setEmail(register.getEmail());
+            user.setRole(Role.ROLE_EDITOR);
+            user.setStatus(true);
             userService.saveUser(user);
             return new ResponseEntity<>("Account is successfully created", HttpStatus.CREATED);
         }

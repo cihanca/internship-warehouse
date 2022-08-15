@@ -81,6 +81,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .exceptionHandling().authenticationEntryPoint(handler).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests()
+                .antMatchers("/user/**").hasRole("EDITOR")
+                .antMatchers("/product/**").hasRole("READER")
                 .antMatchers("/auth/**")
                 .permitAll()
                 .anyRequest().authenticated();

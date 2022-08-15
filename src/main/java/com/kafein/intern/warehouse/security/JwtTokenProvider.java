@@ -17,6 +17,8 @@ public class JwtTokenProvider {
         Date expireDate = java.sql.Date.valueOf(LocalDate.now().plusDays(EXPIRES_IN));
         return Jwts.builder()
                 .setSubject(Integer.toString(userDetails.getId()))
+                .claim("username",auth.getName())
+                .claim("authorities", (auth.getAuthorities()))
                 .setIssuedAt(java.sql.Date.valueOf(LocalDate.now()))
                 .setExpiration(expireDate)
                 .signWith(SignatureAlgorithm.HS512, APP_SECRET)
