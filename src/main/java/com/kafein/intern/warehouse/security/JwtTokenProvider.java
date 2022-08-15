@@ -1,7 +1,6 @@
-package com.kafein.intern.warehouse.secuirty;
+package com.kafein.intern.warehouse.security;
 
 import io.jsonwebtoken.*;
-import lombok.extern.apachecommons.CommonsLog;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
@@ -9,7 +8,7 @@ import java.time.LocalDate;
 import java.util.Date;
 
 @Component
-public class JwtTokeProvider {
+public class JwtTokenProvider {
     private String APP_SECRET = "yeahyayeahyayeahyayeahyayeahyayeahyayeahyayeahyayeahyayeahyayeahyayeahyayeahyayeahyayeahyayeahya";
     private long EXPIRES_IN = 604800L;
 

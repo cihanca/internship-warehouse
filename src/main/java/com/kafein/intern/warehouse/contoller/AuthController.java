@@ -2,7 +2,7 @@ package com.kafein.intern.warehouse.contoller;
 
 import com.kafein.intern.warehouse.dto.LoginDTO;
 import com.kafein.intern.warehouse.entity.User;
-import com.kafein.intern.warehouse.secuirty.JwtTokeProvider;
+import com.kafein.intern.warehouse.security.JwtTokenProvider;
 import com.kafein.intern.warehouse.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,13 +21,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private AuthenticationManager authenticationManager;
-    private JwtTokeProvider jwtTokeProvider;
+    private JwtTokenProvider jwtTokenProvider;
     private PasswordEncoder passwordEncoder;
     private UserService userService;
 
-    public AuthController(AuthenticationManager authenticationManager, JwtTokeProvider jwtTokeProvider, PasswordEncoder passwordEncoder, UserService userService) {
+    public AuthController(AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider, PasswordEncoder passwordEncoder, UserService userService) {
         this.authenticationManager = authenticationManager;
-        this.jwtTokeProvider = jwtTokeProvider;
+        this.jwtTokenProvider = jwtTokenProvider;
         this.passwordEncoder = passwordEncoder;
         this.userService = userService;
     }
@@ -38,7 +38,7 @@ public class AuthController {
                 new UsernamePasswordAuthenticationToken(login.getUsername(),login.getPassword());
         Authentication authentication = authenticationManager.authenticate(authenticationToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        String jwtToken = jwtTokeProvider.generateJwtToken(authentication);
+        String jwtToken = jwtTokenProvider.generateJwtToken(authentication);
         return "Bearer " + jwtToken;
     }
 

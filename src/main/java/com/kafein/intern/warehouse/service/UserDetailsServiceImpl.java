@@ -4,7 +4,7 @@ import com.kafein.intern.warehouse.entity.User;
 import com.kafein.intern.warehouse.enums.ErrorType;
 import com.kafein.intern.warehouse.exception.GenericServiceException;
 import com.kafein.intern.warehouse.repository.UserRepository;
-import com.kafein.intern.warehouse.secuirty.JwtUserDetails;
+import com.kafein.intern.warehouse.security.JwtUserDetails;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -26,11 +26,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     }
 
     public UserDetails loadByUserId(int id) {
-        User user = userRepository.getById(id);
+        User user = userRepository.findById(id);
         if (user == null) {
             throw new GenericServiceException("----", ErrorType.INVALID_REQUEST);
         }
-        System.out.println("username: " + userRepository.getById(id).getUsername());
+        System.out.println("username: " + user.getUsername());
         return JwtUserDetails.create(user);
     }
 

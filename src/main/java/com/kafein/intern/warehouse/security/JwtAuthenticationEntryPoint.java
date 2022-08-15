@@ -1,4 +1,4 @@
-package com.kafein.intern.warehouse.secuirty;
+package com.kafein.intern.warehouse.security;
 
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;

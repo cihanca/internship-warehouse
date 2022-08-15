@@ -147,9 +147,7 @@ public class ProductDetailService {
     }
 
     public boolean updateProductAtWarehouse(ProductUpdateDTO productUpdateDTO) {
-        User userOnDuty = userRepository.findById(productUpdateDTO.getUserId()).orElseThrow(() ->
-                new GenericServiceException("This user is not found with id: " + productUpdateDTO.getUserId(), ErrorType.USER_NOT_FOUND));
-
+        User userOnDuty = userRepository.findById(productUpdateDTO.getUserId());
         if (userOnDuty.getRole() != Role.ADMIN) {
             throw new GenericServiceException("User with id: " + productUpdateDTO.getUserId() + " does not have permission.",
                     ErrorType.DO_NOT_HAVE_PERMISSION);
@@ -202,7 +200,7 @@ public class ProductDetailService {
         log.info("Process Detail saving...");
         ProcessDetail processDetail = new ProcessDetail();
         processDetail.setProductDetail(productDetail);
-        processDetail.setUser(userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found with id: " + userId)));
+        processDetail.setUser(userRepository.findById(userId));
         processDetail.setCount(count);
         processDetail.setProcessType(processType);
         calculateProfit(processDetail,count, productDetail.getProduct().getNetIncome(),processType);

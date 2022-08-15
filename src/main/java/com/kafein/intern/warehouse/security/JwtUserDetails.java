@@ -1,11 +1,10 @@
-package com.kafein.intern.warehouse.secuirty;
+package com.kafein.intern.warehouse.security;
 
 import com.kafein.intern.warehouse.entity.User;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collection;

@@ -28,7 +28,7 @@ public class UserService {
     }
 
     public UserDTO getUser(int id) {
-        User user = userRepository.findById(id).orElseThrow(() -> new GenericServiceException("This user is not found with id: " + id, ErrorType.USER_NOT_FOUND));
+        User user = userRepository.findById(id);
         UserDTO dto = userMapper.toDTO(user);
         return dto;
     }
@@ -69,7 +69,7 @@ public class UserService {
     }
 
    public UserPublicDTO updateUserPassword(int id, String newPassword) {
-       User user = userRepository.findById(id).orElseThrow(() -> new GenericServiceException("This user is not found with id: " + id, ErrorType.USER_NOT_FOUND));
+       User user = userRepository.findById(id);
        user.setPassword(newPassword);
        userRepository.save(user);
        return userMapper.toUserPublicDTO(user);
