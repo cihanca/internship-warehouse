@@ -6,6 +6,8 @@ import com.kafein.intern.warehouse.enums.RoleBasedPermission;
 import com.kafein.intern.warehouse.service.ProductService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
@@ -14,6 +16,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/product")
 public class ProductController {
+
 
     private final ProductService productService;
 
@@ -34,7 +37,7 @@ public class ProductController {
 
 
 
-    @RolesAllowed("ADMIN")
+    @RolesAllowed("ROLE_ADMIN")
     @GetMapping("list")
     public ResponseEntity<List<ProductDTO>> listAllProducts() {
         return new ResponseEntity<>(productService.listAllProducts(), HttpStatus.OK);
