@@ -56,7 +56,7 @@ public class AuthController {
             user.setUsername(register.getUsername());
             user.setName(register.getName());
             user.setEmail(register.getEmail());
-            user.setRole(RoleBasedPermission.ADMIN);
+            user.setRole(RoleBasedPermission.ROLE_ADMIN);
             user.setStatus(true);
             userService.saveUser(user);
             return new ResponseEntity<>("Account is successfully created", HttpStatus.CREATED);

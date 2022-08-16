@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.RolesAllowed;
 import java.util.List;
 
 @RestController
@@ -30,6 +31,7 @@ public class WarehouseController {
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
+    @RolesAllowed("ROLE_USER")
     @GetMapping("/getList")
     public ResponseEntity<List<WarehouseDTO>> getListOfWarehouses() {
         return new ResponseEntity<>(warehouseService.listWarehouses(),HttpStatus.OK);

@@ -10,9 +10,9 @@ import static com.kafein.intern.warehouse.enums.Permission.*;
 
 public enum RoleBasedPermission {
 
-    USER(Sets.newHashSet()),
-    ADMIN(Sets.newHashSet(USER_READ, USER_WRITE, ADMIN_READ, ADMIN_WRITE)),
-    READER(Sets.newHashSet(USER_READ, ADMIN_READ));
+    ROLE_USER(Sets.newHashSet()),
+    ROLE_ADMIN(Sets.newHashSet(USER_READ, USER_WRITE, ADMIN_READ, ADMIN_WRITE)),
+    ROLE_READER(Sets.newHashSet(USER_READ, ADMIN_READ));
 
     private final Set<Permission> permissions;
 
@@ -28,7 +28,7 @@ public enum RoleBasedPermission {
         Set<SimpleGrantedAuthority> permissions = getPermissions().stream()
                 .map(permission -> new SimpleGrantedAuthority(permission.getPermission()))
                 .collect(Collectors.toSet());
-        permissions.add(new SimpleGrantedAuthority("ROLE_" + this.name()));
+        permissions.add(new SimpleGrantedAuthority( this.name()));
         return permissions;
     }
 }

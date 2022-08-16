@@ -149,7 +149,7 @@ public class ProductDetailService {
 
     public boolean updateProductAtWarehouse(ProductUpdateDTO productUpdateDTO) {
         User userOnDuty = userRepository.findById(productUpdateDTO.getUserId());
-        if (userOnDuty.getRole() != RoleBasedPermission.ADMIN) {
+        if (userOnDuty.getRole() != RoleBasedPermission.ROLE_ADMIN) {
             throw new GenericServiceException("User with id: " + productUpdateDTO.getUserId() + " does not have permission.",
                     ErrorType.DO_NOT_HAVE_PERMISSION);
         }

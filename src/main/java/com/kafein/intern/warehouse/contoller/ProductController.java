@@ -35,9 +35,7 @@ public class ProductController {
         return new ResponseEntity<>(productService.getProduct(id), HttpStatus.OK);
     }
 
-
-
-    @RolesAllowed("ROLE_ADMIN")
+    @RolesAllowed({"ROLE_USER", "ROLE_ADMIN"})
     @GetMapping("list")
     public ResponseEntity<List<ProductDTO>> listAllProducts() {
         return new ResponseEntity<>(productService.listAllProducts(), HttpStatus.OK);
