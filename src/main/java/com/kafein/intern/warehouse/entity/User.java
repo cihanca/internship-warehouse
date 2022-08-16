@@ -1,6 +1,7 @@
 package com.kafein.intern.warehouse.entity;
 
 import com.kafein.intern.warehouse.enums.Role;
+import com.kafein.intern.warehouse.enums.RoleBasedPermission;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -23,7 +24,7 @@ public class User {
     private String email;
 
     @Enumerated(EnumType.STRING)
-    private Role role;
+    private RoleBasedPermission role;
 
     private Boolean status;
 

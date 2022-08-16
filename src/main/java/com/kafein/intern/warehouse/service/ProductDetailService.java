@@ -5,6 +5,7 @@ import com.kafein.intern.warehouse.entity.*;
 import com.kafein.intern.warehouse.enums.ErrorType;
 import com.kafein.intern.warehouse.enums.ProcessType;
 import com.kafein.intern.warehouse.enums.Role;
+import com.kafein.intern.warehouse.enums.RoleBasedPermission;
 import com.kafein.intern.warehouse.exception.GenericServiceException;
 import com.kafein.intern.warehouse.mapper.ProcessDetailMapper;
 import com.kafein.intern.warehouse.mapper.ProductDetailMapper;
@@ -148,7 +149,7 @@ public class ProductDetailService {
 
     public boolean updateProductAtWarehouse(ProductUpdateDTO productUpdateDTO) {
         User userOnDuty = userRepository.findById(productUpdateDTO.getUserId());
-        if (userOnDuty.getRole() != Role.ADMIN) {
+        if (userOnDuty.getRole() != RoleBasedPermission.ADMIN) {
             throw new GenericServiceException("User with id: " + productUpdateDTO.getUserId() + " does not have permission.",
                     ErrorType.DO_NOT_HAVE_PERMISSION);
         }

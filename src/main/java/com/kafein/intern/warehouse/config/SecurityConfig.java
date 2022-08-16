@@ -1,5 +1,6 @@
 package com.kafein.intern.warehouse.config;
 
+import com.kafein.intern.warehouse.enums.RoleBasedPermission;
 import com.kafein.intern.warehouse.security.JwtAuthenticationEntryPoint;
 import com.kafein.intern.warehouse.security.JwtAuthenticationFilter;
 import com.kafein.intern.warehouse.service.UserDetailsServiceImpl;
@@ -81,10 +82,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .exceptionHandling().authenticationEntryPoint(handler).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests()
-                .antMatchers("/user/**").hasRole("EDITOR")
-                .antMatchers("/product/**").hasRole("READER")
                 .antMatchers("/auth/**")
                 .permitAll()
+                .antMatchers("/user/**").hasRole(RoleBasedPermission.ADMIN.getDeclaringClass().getName())
                 .anyRequest().authenticated();
 
         httpSecurity.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);

@@ -4,6 +4,7 @@ import com.kafein.intern.warehouse.dto.LoginDTO;
 import com.kafein.intern.warehouse.dto.RegisterDTO;
 import com.kafein.intern.warehouse.entity.User;
 import com.kafein.intern.warehouse.enums.Role;
+import com.kafein.intern.warehouse.enums.RoleBasedPermission;
 import com.kafein.intern.warehouse.security.JwtTokenProvider;
 import com.kafein.intern.warehouse.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -55,7 +56,7 @@ public class AuthController {
             user.setUsername(register.getUsername());
             user.setName(register.getName());
             user.setEmail(register.getEmail());
-            user.setRole(Role.ROLE_EDITOR);
+            user.setRole(RoleBasedPermission.USER);
             user.setStatus(true);
             userService.saveUser(user);
             return new ResponseEntity<>("Account is successfully created", HttpStatus.CREATED);

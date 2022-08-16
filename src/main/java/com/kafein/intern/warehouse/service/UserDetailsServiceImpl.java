@@ -30,7 +30,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         if (user == null) {
             throw new GenericServiceException("----", ErrorType.INVALID_REQUEST);
         }
-        System.out.println("username: " + user.getUsername());
         return JwtUserDetails.create(user);
     }
 

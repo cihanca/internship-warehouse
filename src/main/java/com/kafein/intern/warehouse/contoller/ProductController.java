@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.RolesAllowed;
 import java.util.List;
 
 @RestController
@@ -30,6 +31,9 @@ public class ProductController {
         return new ResponseEntity<>(productService.getProduct(id), HttpStatus.OK);
     }
 
+
+
+    @RolesAllowed("ROLE_READER")
     @GetMapping("list")
     public ResponseEntity<List<ProductDTO>> listAllProducts() {
         return new ResponseEntity<>(productService.listAllProducts(), HttpStatus.OK);

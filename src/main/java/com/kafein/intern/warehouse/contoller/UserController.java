@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.RolesAllowed;
 import java.util.List;
 
 @RestController
@@ -39,6 +40,7 @@ public class UserController {
      *
      * @return list of all users in the database.
      */
+    @RolesAllowed("ROLE_ADMIN")
     @GetMapping("/list")
     public ResponseEntity<List<UserPublicDTO>> list() {
         return new ResponseEntity<>(userService.listUsers(),HttpStatus.OK);
